@@ -1,5 +1,5 @@
 // src/users/users.controller.ts
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
@@ -11,11 +11,16 @@ export class UsersController {
   @Post('create')
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     const { email, password, name } = createUserDto;
+    return this.usersService.create({ email, password, name });
+  }
 
-    return this.usersService.create({
-      email,
-      password,
-      name,
-    });
+  @Get()
+  findAll(): Promise<User[]> {
+    return this.usersService.findAll();
+  }
+
+  @Get(':id')
+  findById(@Param('id') id: string): Promise<User | null> {
+    return this.usersService.findById(+id); // Cast to number if `id` is numeric
   }
 }

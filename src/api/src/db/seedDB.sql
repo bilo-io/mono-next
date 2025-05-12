@@ -1,0 +1,22 @@
+INSERT INTO "users" ("name", "email", "password")
+VALUES 
+  ('Alice Johnson', 'alice@example.com', 'password123'),
+  ('Bob Smith', 'bob@example.com', 'securepass'),
+  ('Charlie Brown', 'charlie@example.com', 'abc123'),
+  ('Dana Lee', 'dana@example.com', 'passw0rd'),
+  ('Eli Zhang', 'eli@example.com', 'hunter2'),
+  ('Fay Morgan', 'fay@example.com', 'letmein'),
+  ('George Ray', 'george@example.com', 'trustno1'),
+  ('Hannah Wells', 'hannah@example.com', '12345678'),
+  ('Ian Black', 'ian@example.com', 'qwerty123'),
+  ('Julia Stone', 'julia@example.com', 'monkey123'),
+  ('Kyle White', 'kyle@example.com', 'adminpass'),
+  ('Lena Kim', 'lena@example.com', 'helloWorld'),
+  ('Max Wu', 'max@example.com', 'ilovecats'),
+  ('Nina Patel', 'nina@example.com', 'pa$$word'),
+  ('Oscar Grant', 'oscar@example.com', 'testing321'),
+  ('Paula Adams', 'paula@example.com', 'demo123'),
+  ('Quinn Hill', 'quinn@example.com', 'welcome!'),
+  ('Rosa Diaz', 'rosa@example.com', 'rosarules'),
+  ('Sam O''Neill', 'sam@example.com', 'pass1234'),
+  ('Tina Fox', 'tina@example.com', 'foxytina');
