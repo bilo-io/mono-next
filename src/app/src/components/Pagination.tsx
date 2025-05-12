@@ -35,7 +35,7 @@ export function Pagination({ page, limit, total, onChange }: PaginationProps) {
                 <button
                     disabled={page === 1}
                     onClick={() => handlePageChange(page - 1)}
-                    className="px-3 py-1 border rounded disabled:opacity-50"
+                    className="px-3 py-1 border rounded-lg disabled:opacity-50"
                 >
                     Prev
                 </button>
@@ -45,7 +45,7 @@ export function Pagination({ page, limit, total, onChange }: PaginationProps) {
                 <button
                     disabled={page === totalPages}
                     onClick={() => handlePageChange(page + 1)}
-                    className="px-3 py-1 border rounded disabled:opacity-50"
+                    className="px-3 py-1 border rounded-lg disabled:opacity-50"
                 >
                     Next
                 </button>
@@ -53,7 +53,7 @@ export function Pagination({ page, limit, total, onChange }: PaginationProps) {
 
             <div>
                 <label className="mr-2 text-sm">Rows per page:</label>
-                <select value={limit} onChange={handleLimitChange} className="border px-2 py-2 text-sm rounded-sm">
+                <select value={limit} onChange={handleLimitChange} className="border px-2 py-2 text-sm rounded-lg">
                     {[5, 10, 20, 50].map((size) => (
                         <option key={size} value={size} className="p-2">
                             {size}

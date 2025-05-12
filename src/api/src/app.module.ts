@@ -5,6 +5,10 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
+import { TenantsModule } from './tenants/tenants.module';
+import { Tenant } from './tenants/tenant.entity';
+import { Location } from './locations/location.entity';
+import { LocationsModule } from './locations/locations.module';
 
 @Module({
   imports: [
@@ -27,12 +31,14 @@ import { UsersModule } from './users/users.module';
           password: url.password,
           database: url.pathname.replace('/', ''),
           ssl: false,
-          entities: [User],
+          entities: [Tenant, Location, User],
         };
       },
     }),
 
     // Feature modules
+    TenantsModule,
+    LocationsModule,
     UsersModule,
   ],
   controllers: [AppController],

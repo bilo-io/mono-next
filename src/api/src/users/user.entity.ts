@@ -1,5 +1,8 @@
 // src/users/user.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+
+import { Tenant } from '../tenants/tenant.entity';
+import { Location } from '../locations/location.entity';
 
 @Entity('users')
 export class User {
@@ -14,4 +17,10 @@ export class User {
 
   @Column()
   name!: string;
+
+  @ManyToOne(() => Tenant)
+  tenant!: string;
+
+  @ManyToOne(() => Location)
+  location!: string;
 }

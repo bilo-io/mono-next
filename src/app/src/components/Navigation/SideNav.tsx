@@ -1,8 +1,9 @@
 'use client';
 import React, { useState } from 'react';
 import { useTheme } from '@/context/ThemeContext';
-import { FiHome, FiSettings, FiMenu, FiUsers } from 'react-icons/fi';
+import { FiHome, FiSettings, FiMenu, FiUsers, FiShield, FiMapPin } from 'react-icons/fi';
 import clsx from 'clsx';
+import { AiFillBank } from 'react-icons/ai';
 
 const navItems = [
     {
@@ -11,15 +12,30 @@ const navItems = [
         href: '/dashboard'
     },
     {
+        icon: <AiFillBank />,
+        label: 'Tenants',
+        href: '/tenants'
+    },
+    {
+        icon: <FiMapPin />,
+        label: 'Locations',
+        href: '/locations'
+    },
+    {
         icon: <FiUsers />,
         label: 'Users',
         href: '/users'
     },
-    {
-        icon: <FiSettings />,
-        label: 'Settings',
-        href: '/settings'
-    },
+    // {
+    //     icon: <FiShield />,
+    //     label: 'Permissions',
+    //     href: '/permissions'
+    // },
+    // {
+    //     icon: <FiSettings />,
+    //     label: 'Settings',
+    //     href: '/settings'
+    // },
 ];
 
 export const SideNav = ({ mobile, toggleMobile }: { mobile?: boolean; toggleMobile?: () => void }) => {

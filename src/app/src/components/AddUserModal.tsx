@@ -3,6 +3,7 @@
 
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
+import { useTheme } from '@/context/ThemeContext';
 
 interface AddUserForm {
     name: string;
@@ -11,6 +12,7 @@ interface AddUserForm {
 
 export function AddUserModal() {
     const [open, setOpen] = useState(false);
+    const { theme } = useTheme()
     const { register, handleSubmit, reset, formState: { errors } } = useForm<AddUserForm>();
 
     const onSubmit = async (data: AddUserForm) => {
@@ -25,7 +27,8 @@ export function AddUserModal() {
 
     return (
         <>
-            <button onClick={() => setOpen(true)} className="ml-auto mb-4 px-4 py-2 bg-blue-600 text-white rounded">
+            <button onClick={() => setOpen(true)} className="ml-auto mb-0 px-4 py-2 border rounded-lg text-sm"
+            style={{ color: theme.PRIMARY, borderColor: theme.PRIMARY }}>
                 + Add
             </button>
             {open && (

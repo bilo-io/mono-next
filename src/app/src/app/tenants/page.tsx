@@ -1,5 +1,5 @@
 'use client'
-import { AddUserModal } from '@/components/AddUserModal';
+// import { AddTenantModal } from '@/components/AddTenantModal';
 import { Layout } from '@/components/Navigation/Layout';
 import { Table } from '@/components/Table';
 import { type PaginatedResponse, Pagination } from '@/components/Pagination';
@@ -9,19 +9,19 @@ import type { ColDef } from 'ag-grid-community'
 import { Toggle } from '@/components/Toggle';
 import { FiTable, FiList } from 'react-icons/fi';
 
-interface User {
+interface Tenant {
     id: number;
     name: string;
-    email: string;
+    domain: string;
     createdAt: string;
     updatedAt: string;
 }
 
 // #region VIEW CONFIG
-const columns: ColDef<User>[] = [
+const columns: ColDef<Tenant>[] = [
     { headerName: 'ID', field: 'id', width: 90 },
     { headerName: 'Name', field: 'name', flex: 1 },
-    { headerName: 'Email', field: 'email', flex: 1 },
+    { headerName: 'Domain', field: 'domain', flex: 1 },
     {
         headerName: 'Created',
         field: 'createdAt',
@@ -31,21 +31,21 @@ const columns: ColDef<User>[] = [
 ];
 
 type ViewType = 'table' | 'list';
-const viewOptions: { 
+const viewOptions: {
     value: ViewType,
     icon: ReactNode
 }[] = [
-    { value: 'table', icon: <FiTable className="w-4 h-4" /> },
-    { value: 'list', icon: <FiList className="w-4 h-4" /> },
+        { value: 'table', icon: <FiTable className="w-4 h-4" /> },
+        { value: 'list', icon: <FiList className="w-4 h-4" /> },
     ];
 // #endregion
 
-export default function UsersPage() {
+export default function TenantsPage() {
     const [page, setPage] = useState<number>(1)
     const [limit, setLimit] = useState<number>(10)
     const [view, setView] = useState<ViewType>('list');
 
-    const { data: users, } = useFetch<PaginatedResponse<User>>(`/users?page=${page}&limit=${limit}`)
+    const { data: tenants, } = useFetch<PaginatedResponse<Tenant>>(`/tenants?page=${page}&limit=${limit}`)
 
     const handlePagination = (
         page: number,
@@ -58,20 +58,20 @@ export default function UsersPage() {
     return (
         <Layout>
             <div className="text-2xl font-bold mb-4 flex flex-row items-center justify-between">
-                <div>Users</div>
+                <div>Tenants</div>
                 <div className="flex flex-row h-full items-center gap-8">
-                    <Toggle<ViewType> 
+                    <Toggle<ViewType>
                         value={view}
                         onChange={setView}
                         options={viewOptions}
                     />
-                    <AddUserModal />
+                    {/* <AddTenantModal /> */}
                 </div>
             </div>
 
             {view === 'table' && (
-                <Table<User>
-                    rowData={users?.data || []}
+                <Table<Tenant>
+                    rowData={tenants?.data || []}
                     columnDefs={columns}
                     height={'500px'}
                 />
@@ -79,11 +79,11 @@ export default function UsersPage() {
 
             {view === 'list' && (
                 <ul className="space-y-2">
-                    {users?.data?.map((user: User) => (
-                        <li key={user.id} className="p-4 border rounded shadow">
-                            <div><strong>{user.name}</strong></div>
-                            <div>{user.email}</div>
-                            <div className="text-sm text-gray-500">Created: {new Date(user.createdAt).toLocaleString()}</div>
+                    {tenants?.data?.map((tenant: Tenant) => (
+                        <li key={tenant.id} className="p-4 border rounded shadow">
+                            <div><strong>{tenant.name}</strong></div>
+                            <div>{tenant.domain}</div>
+                            <div className="text-sm text-gray-500">Created: {new Date(tenant.createdAt).toLocaleString()}</div>
                         </li>
                     ))}
                 </ul>
@@ -93,11 +93,8 @@ export default function UsersPage() {
                 page={page}
                 limit={limit}
                 onChange={handlePagination}
-                total={users?.meta?.total as number}
+                total={tenants?.meta?.total as number}
             />
         </Layout>
     );
 }
-
-
-{/*  */ }
