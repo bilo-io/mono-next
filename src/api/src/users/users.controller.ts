@@ -1,8 +1,9 @@
 // src/users/users.controller.ts
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
+import { PaginatedResponse } from '../common/pagination/paginate';
 
 @Controller('users')
 export class UsersController {
@@ -15,8 +16,11 @@ export class UsersController {
   }
 
   @Get()
-  findAll(): Promise<User[]> {
-    return this.usersService.findAll();
+  findAll(
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
+  ): Promise<PaginatedResponse<User>> {
+    return this.usersService.findAllPaginated(parseInt(page), parseInt(limit));
   }
 
   @Get(':id')
