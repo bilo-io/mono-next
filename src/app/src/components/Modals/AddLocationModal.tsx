@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
+import { Location } from '@/app/locations/page';
 
 interface TenantOption {
     id: number;
@@ -10,13 +11,7 @@ interface TenantOption {
 
 interface AddLocationModalProps {
     buttonText: string;
-    onSubmit: (location: {
-        name: string;
-        address: string;
-        lat: number;
-        lon: number;
-        tenantId: number;
-    }) => void;
+    onSubmit: (location: Location) => void;
     tenants: TenantOption[];
 }
 
@@ -39,7 +34,9 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
             address,
             lat: parseFloat(lat),
             lon: parseFloat(lon),
-            tenantId,
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            tenant: null,
         });
         setIsOpen(false);
         setName('');

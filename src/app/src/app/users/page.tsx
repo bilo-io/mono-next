@@ -15,8 +15,9 @@ import { SkeletonList } from '@/components/ui/Skeleton/views/SkeletonList';
 import { ToggleFilters } from '@/components/FilterForm/ToggleFilters';
 import { toQueryString } from '@/util/query';
 import { Collapsible } from '@/components/ui/Collapsible';
+import { useToast } from '@/context/ToastProvider';
 
-interface User {
+export interface User {
     id: number;
     name: string;
     email: string;
@@ -48,6 +49,7 @@ const viewOptions: {
 // #endregion
 
 export default function UsersPage() {
+    // #region HOOKS
     const [view, setView] = useState<ViewType>('list');
     const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
     const [query, setQuery] = useState<any>({
@@ -55,18 +57,39 @@ export default function UsersPage() {
         limit: 10
     });
 
-    const { data: users, loading, retry } = useFetch<PaginatedResponse<User>>(`/users?${toQueryString(query)}`)
+    const { showToast } = useToast()
+    const { data: users, loading, retry: fetchData } = useFetch<PaginatedResponse<User>>(`/users?${toQueryString(query)}`, {
+        auto: true,
+        method: 'GET',
+        onSuccess: () => showToast('Data loaded', 'success'),
+        onError: () => showToast('Data failed to load', 'warning')
+    })
+    const { retry: createData } = useFetch<PaginatedResponse<User>>(`/users`, {
+        auto: false,
+        method: 'POST',
+        onSuccess: () => {
+            showToast('Data created', 'success')
+            fetchData()
+        },
+    })
+    // #endregion
 
+    // #region HANDLERS
     const handlePagination = (
         page: number,
         limit: number
     ) => {
-        setQuery((prev: any) => ({
-            ...prev,
-            page,
-            limit
-        }))
+        setQuery((prev: any) => ({ ...prev, page, limit }))
     }
+
+    const handleCreate = async (data: User) => {
+        try {
+            await createData(data);
+        } catch (err) {
+            console.error('Failed to create', err);
+        }
+    };
+    // #endregion
 
     return (
         <Layout>
@@ -82,7 +105,10 @@ export default function UsersPage() {
                         isOpen={isFiltersOpen}
                         onClick={() => setIsFiltersOpen((prev) => !prev)}
                     />
-                    <AddUserModal buttonText={'+ Add'} onAddUser={() => { }} />
+                    <AddUserModal
+                        buttonText={'+ Add'}
+                        onSubmit={handleCreate}
+                    />
                 </div>
             </div>
 
@@ -94,7 +120,7 @@ export default function UsersPage() {
 
             <Async
                 isLoading={loading}
-                onRefresh={retry}
+                onRefresh={fetchData}
                 hasData={(users?.data?.length && users?.data?.length > 0) as boolean}
                 loader={<Spinner />}
                 preloader={<SkeletonList count={3} />}>

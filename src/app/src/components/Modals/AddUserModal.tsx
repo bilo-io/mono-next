@@ -3,14 +3,15 @@
 import React, { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
+import { User } from '@/app/users/page';
 
 interface AddUserModalProps {
-    onAddUser: (user: { name: string; email: string }) => void;
+    onSubmit: (user: User) => void;
     buttonText?: string;
 }
 
 export const AddUserModal: React.FC<AddUserModalProps> = ({
-    onAddUser,
+    onSubmit,
     buttonText = 'Add User',
 }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +27,7 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({
 
     const handleSubmit = () => {
         if (name.trim() && email.trim()) {
-            onAddUser({ name, email });
+            onSubmit({ name, email } as User);
             handleClose();
         }
     };

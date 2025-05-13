@@ -16,8 +16,9 @@ import { Collapsible } from '@/components/ui/Collapsible';
 import { Spinner } from '@/components/ui/Spinner';
 import { SkeletonList } from '@/components/ui/Skeleton/views/SkeletonList';
 import Async from '@/components/Async';
+import { useToast } from '@/context/ToastProvider';
 
-interface Location {
+export interface Location {
     id: number;
     name: string;
     tenant: { name: string }; // assuming tenant is an object with name
@@ -32,14 +33,7 @@ interface Location {
 const columns: ColDef<Location>[] = [
     { headerName: 'ID', field: 'id', width: 90 },
     { headerName: 'Name', field: 'name', flex: 1 },
-    // { headerName: 'Tenant', field: 'tenant', flex: 1 },  // Accessing tenant name
     { headerName: 'Address', field: 'address', flex: 1 },
-    // {
-    //     headerName: 'Created',
-    //     field: 'createdAt',
-    //     valueFormatter: ({ value }) => new Date(value).toLocaleDateString(),
-    //     flex: 1,
-    // },
 ];
 
 type ViewType = 'table' | 'list';
@@ -47,21 +41,75 @@ const viewOptions: {
     value: ViewType,
     icon: ReactNode
 }[] = [
-        { value: 'table', icon: <FiTable className="w-4 h-4" /> },
-        { value: 'list', icon: <FiList className="w-4 h-4" /> },
-    ];
+    { value: 'table', icon: <FiTable className="w-4 h-4" /> },
+    { value: 'list', icon: <FiList className="w-4 h-4" /> },
+];
+
+const filterFields: FilterField[] = [
+    {
+        name: 'name',
+        label: 'Location Name',
+        type: 'text',
+        placeholder: 'Filter by location name',
+    },
+    {
+        name: 'address',
+        label: 'Address',
+        type: 'text',
+        placeholder: 'Filter by address',
+    },
+    {
+        name: 'lat',
+        label: 'Latitude',
+        type: 'text',
+        placeholder: 'Filter by latitude',
+    },
+    {
+        name: 'lon',
+        label: 'Longitude',
+        type: 'text',
+        placeholder: 'Filter by longitude',
+    },
+    {
+        name: 'status',
+        label: 'Status',
+        type: 'select',
+        options: [
+            { value: '', label: 'All' },
+            { value: 'active', label: 'Active' },
+            { value: 'inactive', label: 'Inactive' },
+        ],
+    },
+];
 // #endregion
 
 export default function LocationsPage() {
+    // #region HOOKS
     const [view, setView] = useState<ViewType>('list');
     const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
     const [query, setQuery] = useState<any>({
         page: 1,
         limit: 10
     });
+    
+    const { showToast } = useToast()
+    const { data: locations, loading, retry: fetchData } = useFetch<PaginatedResponse<Location>>(`/locations?${toQueryString(query)}`, {
+        auto: true,
+        method: 'GET',
+        onSuccess: () => showToast('Data loaded', 'success'),
+        onError: () => showToast('Data failed to load', 'warning')
+    })
+    const { retry: createData } = useFetch<PaginatedResponse<Location>>(`/locations`, {
+        auto: false,
+        method: 'POST',
+        onSuccess: () => {
+            showToast('Data created', 'success')
+            fetchData()
+        },
+    })
+    // #endregion
 
-    const { data: locations, loading, retry } = useFetch<PaginatedResponse<Location>>(`/locations?${toQueryString(query)}`)
-
+    // #region HANDLERS
     const handlePagination = (
         page: number,
         limit: number
@@ -74,47 +122,18 @@ export default function LocationsPage() {
     }
 
     const handleFilterChange = (newQuery: any) => {
-        setQuery(newQuery);
+        setQuery((prev: any) => ({ ...prev, newQuery }));
         console.log('Current query:', newQuery); // This is where you can use the query for your fetch logic
     };
+    // #endregion
 
-    const filterFields: FilterField[] = [
-        {
-            name: 'name',
-            label: 'Location Name',
-            type: 'text',
-            placeholder: 'Filter by location name',
-        },
-        {
-            name: 'address',
-            label: 'Address',
-            type: 'text',
-            placeholder: 'Filter by address',
-        },
-        {
-            name: 'lat',
-            label: 'Latitude',
-            type: 'text',
-            placeholder: 'Filter by latitude',
-        },
-        {
-            name: 'lon',
-            label: 'Longitude',
-            type: 'text',
-            placeholder: 'Filter by longitude',
-        },
-        {
-            name: 'status',
-            label: 'Status',
-            type: 'select',
-            options: [
-                { value: '', label: 'All' },
-                { value: 'active', label: 'Active' },
-                { value: 'inactive', label: 'Inactive' },
-            ],
-        },
-    ];
-
+    const handleCreate = async (data: Location) => {
+        try {
+            await createData(data);
+        } catch (err) {
+            console.error('Failed to create', err);
+        }
+    };
 
     return (
         <Layout>
@@ -132,8 +151,13 @@ export default function LocationsPage() {
                     />
                     <AddLocationModal
                         buttonText={'+ Add'}
-                        onSubmit={() => { }}
-                        tenants={[]}
+                        onSubmit={handleCreate}
+                        tenants={[
+                            {
+                                id: 1,
+                                name: 'Test'
+                            }
+                        ]}
                     />
                 </div>
             </div>
@@ -154,7 +178,7 @@ export default function LocationsPage() {
 
             <Async
                 isLoading={loading}
-                onRefresh={retry}
+                onRefresh={fetchData}
                 hasData={(locations?.data?.length && locations?.data?.length > 0) as boolean}
                 loader={<Spinner />}
                 preloader={<SkeletonList count={3} />}>

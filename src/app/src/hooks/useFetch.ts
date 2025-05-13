@@ -3,39 +3,87 @@ import { useCallback, useEffect, useState } from 'react';
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 interface FetchResult<T> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    retry: (overrideBody?: Record<string, T | any> | FormData | string) => void;
     data: T | null;
     loading: boolean;
     error: Error | null;
-    retry: () => void;
 }
 
-export function useFetch<T>(path: string, options: unknown[] = []): FetchResult<T> {
+interface FetchConfig<T> {
+    method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+    body?: Record<string, T> | FormData | string;
+    headers?: HeadersInit;
+    onSuccess?: (data: T) => void;
+    onError?: (error: Error) => void;
+    auto?: boolean;
+}
+
+export function useFetch<T>(
+    path: string,
+    config: FetchConfig<T> = {},
+    deps: unknown[] = []
+): FetchResult<T> {
     const [data, setData] = useState<T | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
 
-    const fetchData = useCallback(async () => {
-        setLoading(true);
-        try {
-            const res = await fetch(`${BASE_URL}${path}`, { cache: 'no-store' });
-            if (!res.ok) throw new Error(`Error: ${res.statusText}`);
-            const json = await res.json();
-            setData(json);
-            setError(null);
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (err: any) {
-            setError(err);
-            setData(null);
-        } finally {
-            setLoading(false);
-        }
-    }, [path, ...options]);
+    const fetchData = useCallback(
+        async (overrideBody?: Record<string, T> | FormData | string) => {
+            setLoading(true);
+            const { method = 'GET', headers, onSuccess, onError } = config;
+
+            try {
+                const body = overrideBody ?? config.body;
+
+                const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
+                const finalHeaders =
+                    headers || (body && !isFormData ? { 'Content-Type': 'application/json' } : {});
+
+                const res = await fetch(`${BASE_URL}${path}`, {
+                    method,
+                    headers: finalHeaders,
+                    body: body
+                        ? isFormData
+                            ? body
+                            : typeof body === 'string'
+                                ? body
+                                : JSON.stringify(body)
+                        : undefined,
+                    cache: 'no-store',
+                });
+
+                if (!res.ok) throw new Error(`Error: ${res.statusText}`);
+
+                const contentType = res.headers.get('content-type');
+                const json = contentType?.includes('application/json') ? await res.json() : null;
+
+                setData(json);
+                setError(null);
+                onSuccess?.(json);
+            } catch (err: unknown) {
+                const errorObj = err as Error;
+                setError(errorObj);
+                setData(null);
+                onError?.(errorObj);
+            } finally {
+                setLoading(false);
+            }
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [path, JSON.stringify(config), ...deps]
+    );
 
     useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+        if (config?.auto ?? true) {
+            fetchData();
+        }
+    }, [fetchData, config?.auto]);
 
-    return { data, loading, error, retry: fetchData };
+    return {
+        data,
+        loading,
+        error,
+        retry: fetchData,
+    };
 }

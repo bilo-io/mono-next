@@ -4,7 +4,7 @@ import { Layout } from '@/components/Navigation/Layout';
 import { Table } from '@/components/Table';
 import { type PaginatedResponse, Pagination } from '@/components/Pagination';
 import { useFetch } from '@/hooks/useFetch';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import type { ColDef } from 'ag-grid-community'
 import { Toggle } from '@/components/Toggle';
 import { FiTable, FiList } from 'react-icons/fi';
@@ -15,8 +15,9 @@ import Async from '@/components/Async';
 import { Spinner } from '@/components/ui/Spinner';
 import { SkeletonList } from '@/components/ui/Skeleton/views/SkeletonList';
 import { Collapsible } from '@/components/ui/Collapsible';
+import { useToast } from '@/context/ToastProvider';
 
-interface Tenant {
+export interface Tenant {
     id: number;
     name: string;
     domain: string;
@@ -48,25 +49,47 @@ const viewOptions: {
 // #endregion
 
 export default function TenantsPage() {
+    // #region HOOKS
     const [view, setView] = useState<ViewType>('list');
     const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
     const [query, setQuery] = useState<any>({
         page: 1,
         limit: 10
     });
+    
+    const { showToast } = useToast()
+    const { data: tenants, loading, retry: fetchData } = useFetch<PaginatedResponse<Tenant>>(`/tenants?${toQueryString(query)}`, {
+        auto: true,
+        // onSuccess: () => showToast('Data loaded', 'success'),
+        onError: () => showToast('Data failed to load', 'warning')
+    })
+    const { retry: createData } = useFetch<Tenant>('/tenants', {
+        auto: false,
+        method: 'POST',
+        onError: () => showToast('Data failed to create', 'error'),
+        onSuccess: () => {
+            showToast('Data created', 'success')
+            fetchData()
+        },
+    });
+    // #endregion 
 
-    const { data: tenants, loading, error, retry } = useFetch<PaginatedResponse<Tenant>>(`/tenants?${toQueryString(query)}`)
-
+    // #region HANDLERS
     const handlePagination = (
         page: number,
         limit: number
     ) => {
-        setQuery((prev: any) => ({
-            ...prev,
-            page,
-            limit
-        }))
+        setQuery((prev: any) => ({ ...prev, page, limit }))
     }
+
+    const handleCreate = async (data: Tenant) => {
+        try {
+            await createData(data);
+        } catch (err) {
+            console.error('Failed to create', err);
+        }
+    };
+    // #endregion
 
     return (
         <Layout>
@@ -82,7 +105,7 @@ export default function TenantsPage() {
                         isOpen={isFiltersOpen}
                         onClick={() => setIsFiltersOpen((prev) => !prev)}
                     />
-                    <AddTenantModal buttonText={'+ Add'} onSubmit={() => { }} />
+                    <AddTenantModal buttonText={'+ Add'} onSubmit={handleCreate} />
                 </div>
             </div>
 
@@ -95,7 +118,7 @@ export default function TenantsPage() {
 
             <Async
                 isLoading={loading}
-                onRefresh={retry}
+                onRefresh={fetchData}
                 hasData={(tenants?.data?.length && tenants?.data?.length > 0) as boolean}
                 loader={<Spinner />}
                 preloader={<SkeletonList count={3} />}>
