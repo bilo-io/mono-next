@@ -26,7 +26,7 @@ export const AddTenantModal: React.FC<AddTenantModalProps> = ({ buttonText, onSu
 
     return (
         <>
-            <Button variant="primary" onClick={() => setIsOpen(true)}>
+            <Button variant="primary" onClick={() => setIsOpen(true)} size='sm' className='focus:outline-0'>
                 {buttonText}
             </Button>
 

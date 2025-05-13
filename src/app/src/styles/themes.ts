@@ -9,7 +9,7 @@ export type Theme = {
 export const LIGHT_THEME = {
     BACKGROUND: '#ffffff',
     TEXT: '#000000',
-    PRIMARY: '#1e40af',
+    PRIMARY: '#00aedd',
     SIDENAV_BG: '#f1f5f9',
     SIDENAV_TEXT: '#0f172a',
 };
@@ -17,7 +17,7 @@ export const LIGHT_THEME = {
 export const DARK_THEME: Theme = {
     BACKGROUND: '#0f172a',
     TEXT: '#f8fafc',
-    PRIMARY: '#3b82f6',
+    PRIMARY: '#00aedd',
     SIDENAV_BG: '#1e293b',
     SIDENAV_TEXT: '#f8fafc',
 };

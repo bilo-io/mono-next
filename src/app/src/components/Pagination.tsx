@@ -1,4 +1,7 @@
 'use client'
+
+import Button from "./ui/Button";
+
 interface PaginationProps {
     page: number;
     limit: number;
@@ -32,23 +35,25 @@ export function Pagination({ page, limit, total, onChange }: PaginationProps) {
     return (
         <div className="flex items-center justify-between mt-4">
             <div className="flex gap-2 items-center">
-                <button
+                <Button
+                    variant="outline" size='sm'
                     disabled={page === 1}
                     onClick={() => handlePageChange(page - 1)}
-                    className="px-3 py-1 border rounded-lg disabled:opacity-50"
+                    className="disabled:opacity-50"
                 >
                     Prev
-                </button>
+                </Button>
                 <span>
                     Page {page} of {totalPages}
                 </span>
-                <button
+                <Button
+                    variant="outline" size='sm'
                     disabled={page === totalPages}
                     onClick={() => handlePageChange(page + 1)}
-                    className="px-3 py-1 border rounded-lg disabled:opacity-50"
+                    className="disabled:opacity-50"
                 >
                     Next
-                </button>
+                </Button>
             </div>
 
             <div>

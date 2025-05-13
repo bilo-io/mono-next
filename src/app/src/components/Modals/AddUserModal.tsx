@@ -34,7 +34,7 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({
 
     return (
         <>
-            <Button variant="primary" size="md" onClick={handleOpen}>
+            <Button variant="primary" onClick={() => setIsOpen(true)} size='sm'>
                 {buttonText}
             </Button>
 

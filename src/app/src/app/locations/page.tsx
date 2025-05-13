@@ -181,7 +181,7 @@ export default function LocationsPage() {
                 onRefresh={fetchData}
                 hasData={(locations?.data?.length && locations?.data?.length > 0) as boolean}
                 loader={<Spinner />}
-                preloader={<SkeletonList count={3} />}>
+                preloader={<SkeletonList count={10} />}>
                 <>
                     {view === 'table' && (
                         <Table<Location>
@@ -200,7 +200,7 @@ export default function LocationsPage() {
                                     <div className="text-sm text-gray-500">
                                         Tenant: {location.name} | Lat: {location.lat}, Lon: {location.lon}
                                     </div>
-                                    <div className="text-sm text-gray-500">Created: {new Date(location.createdAt).toLocaleString()}</div>
+                                    {/* <div className="text-sm text-gray-500">Created: {new Date(location.createdAt).toLocaleString()}</div> */}
                                 </li>
                             ))}
                         </ul>

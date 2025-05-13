@@ -57,7 +57,7 @@ export const AddLocationModal: React.FC<AddLocationModalProps> = ({
 
     return (
         <>
-            <Button variant="primary" onClick={() => setIsOpen(true)}>
+            <Button variant="primary" onClick={() => setIsOpen(true)} size='sm'>
                 {buttonText}
             </Button>
 

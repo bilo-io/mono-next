@@ -121,7 +121,7 @@ export default function TenantsPage() {
                 onRefresh={fetchData}
                 hasData={(tenants?.data?.length && tenants?.data?.length > 0) as boolean}
                 loader={<Spinner />}
-                preloader={<SkeletonList count={3} />}>
+                preloader={<SkeletonList count={10} />}>
                 <>
                     {view === 'table' && (
                         <Table<Tenant>
