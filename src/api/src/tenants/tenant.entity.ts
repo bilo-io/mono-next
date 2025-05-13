@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('tenants')
 export class Tenant {
@@ -7,4 +13,10 @@ export class Tenant {
 
   @Column()
   name!: string;
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt!: string;
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updatedAt!: string;
 }

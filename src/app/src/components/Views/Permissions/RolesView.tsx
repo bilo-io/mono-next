@@ -1,41 +1,36 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
-import { Layout } from '@/components/Navigation/Layout';
+
 import { Table } from '@/components/Table';
 import { type PaginatedResponse, Pagination } from '@/components/Pagination';
 import { useFetch } from '@/hooks/useFetch';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import type { ColDef } from 'ag-grid-community'
 import { Toggle } from '@/components/Toggle';
 import { FiTable, FiList } from 'react-icons/fi';
-import { AddTenantModal } from '@/components/Modals/AddTenantModal';
-import { ToggleFilters } from '@/components/FilterForm/ToggleFilters';
-import { toQueryString } from '@/util/query';
 import Async from '@/components/Async';
 import { Spinner } from '@/components/ui/Spinner';
 import { SkeletonList } from '@/components/ui/Skeleton/views/SkeletonList';
+import { ToggleFilters } from '@/components/FilterForm/ToggleFilters';
+import { toQueryString } from '@/util/query';
 import { Collapsible } from '@/components/ui/Collapsible';
 import { useToast } from '@/context/ToastProvider';
 
-export interface Tenant {
-    id: number;
+export interface Role {
+    id: string | number;
     name: string;
-    domain: string;
-    createdAt: string;
-    updatedAt: string;
 }
 
 // #region VIEW CONFIG
-const columns: ColDef<Tenant>[] = [
+const columns: ColDef<Role>[] = [
     { headerName: 'ID', field: 'id', width: 90 },
     { headerName: 'Name', field: 'name', flex: 1 },
-    { headerName: 'Domain', field: 'domain', flex: 1 },
-    {
-        headerName: 'Created',
-        field: 'createdAt',
-        valueFormatter: ({ value }) => new Date(value).toLocaleDateString(),
-        flex: 1,
-    },
+    // { headerName: 'Email', field: 'email', flex: 1 },
+    // {
+    //     headerName: 'Created',
+    //     field: 'createdAt',
+    //     valueFormatter: ({ value }) => new Date(value).toLocaleDateString(),
+    //     flex: 1,
+    // },
 ];
 
 type ViewType = 'table' | 'list';
@@ -48,7 +43,7 @@ const viewOptions: {
     ];
 // #endregion
 
-export default function TenantsPage() {
+export const RolesView: React.FC<any> = () => {
     // #region HOOKS
     const [view, setView] = useState<ViewType>('list');
     const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
@@ -56,23 +51,23 @@ export default function TenantsPage() {
         page: 1,
         limit: 10
     });
-    
+
     const { showToast } = useToast()
-    const { data: tenants, loading, retry: fetchData } = useFetch<PaginatedResponse<Tenant>>(`/tenants?${toQueryString(query)}`, {
+    const { data: roles, loading, retry: fetchData } = useFetch<PaginatedResponse<Role>>(`/roles?${toQueryString(query)}`, {
         auto: true,
-        // onSuccess: () => showToast('Data loaded', 'success'),
+        method: 'GET',
+        onSuccess: () => showToast('Data loaded', 'success'),
         onError: () => showToast('Data failed to load', 'warning')
     })
-    const { retry: createData } = useFetch<Tenant>('/tenants/create', {
+    const { retry: createData } = useFetch<PaginatedResponse<Role>>(`/roles`, {
         auto: false,
         method: 'POST',
-        onError: () => showToast('Data failed to create', 'error'),
         onSuccess: () => {
             showToast('Data created', 'success')
             fetchData()
         },
-    });
-    // #endregion 
+    })
+    // #endregion
 
     // #region HANDLERS
     const handlePagination = (
@@ -82,7 +77,7 @@ export default function TenantsPage() {
         setQuery((prev: any) => ({ ...prev, page, limit }))
     }
 
-    const handleCreate = async (data: Tenant) => {
+    const handleCreate = async (data: Role) => {
         try {
             await createData(data);
         } catch (err) {
@@ -92,9 +87,10 @@ export default function TenantsPage() {
     // #endregion
 
     return (
-        <Layout>
+        <div>
             <div className="text-2xl font-bold mb-4 flex flex-row items-center justify-between">
-                <div>Tenants</div>
+                {/* <div>Roles</div> */}
+                <div />
                 <div className="flex flex-row h-full items-center gap-8">
                     <Toggle<ViewType>
                         value={view}
@@ -105,7 +101,10 @@ export default function TenantsPage() {
                         isOpen={isFiltersOpen}
                         onClick={() => setIsFiltersOpen((prev) => !prev)}
                     />
-                    <AddTenantModal buttonText={'+ Add'} onSubmit={handleCreate} />
+                    {/* <AddRoleModal
+                        buttonText={'+ Add'}
+                        onSubmit={handleCreate}
+                    /> */}
                 </div>
             </div>
 
@@ -115,29 +114,27 @@ export default function TenantsPage() {
                 </div>
             </Collapsible>
 
-
             <Async
                 isLoading={loading}
                 onRefresh={fetchData}
-                hasData={(tenants?.data?.length && tenants?.data?.length > 0) as boolean}
+                hasData={(roles?.data?.length && roles?.data?.length > 0) as boolean}
                 loader={<Spinner />}
-                preloader={<SkeletonList count={10} />}>
+                preloader={<SkeletonList count={3} />}>
                 <>
                     {view === 'table' && (
-                        <Table<Tenant>
-                            rowData={tenants?.data || []}
+                        <Table<Role>
+                            rowData={roles?.data || []}
                             columnDefs={columns}
                             height={'500px'}
                         />
                     )}
-
                     {view === 'list' && (
                         <ul className="space-y-2">
-                            {tenants?.data?.map((tenant: Tenant) => (
-                                <li key={tenant.id} className="p-4 border rounded shadow">
-                                    <div><strong>{tenant.name}</strong></div>
-                                    <div>{tenant.domain}</div>
-                                    <div className="text-sm text-gray-500">Created: {new Date(tenant.createdAt).toLocaleString()}</div>
+                            {roles?.data?.map((role: Role) => (
+                                <li key={role.id} className="p-4 border rounded shadow">
+                                    <div><strong>{role.name}</strong></div>
+                                    <div>{role.name}</div>
+                                    <div className="text-sm text-gray-500">Created: {new Date(role.createdAt).toLocaleString()}</div>
                                 </li>
                             ))}
                         </ul>
@@ -149,8 +146,8 @@ export default function TenantsPage() {
                 page={query.page}
                 limit={query.limit}
                 onChange={handlePagination}
-                total={tenants?.meta?.total as number}
+                total={roles?.meta?.total as number}
             />
-        </Layout>
-    );
+        </div>
+    )
 }

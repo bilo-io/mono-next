@@ -1,0 +1,40 @@
+-- #region Drop Tables if Exist
+DROP TABLE IF EXISTS "users";
+DROP TABLE IF EXISTS "locations";
+DROP TABLE IF EXISTS "tenants";
+-- #endregion
+
+-- #region Create Tenants Table
+CREATE TABLE "tenants" (
+  "id" SERIAL PRIMARY KEY,
+  "name" VARCHAR(255) NOT NULL,
+  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+-- #endregion
+
+-- #region Create Locations Table
+CREATE TABLE "locations" (
+  "id" SERIAL PRIMARY KEY,
+  "name" VARCHAR(255) NOT NULL,
+  "tenantId" INTEGER NOT NULL REFERENCES "tenants" ("id") ON DELETE CASCADE,
+  "address" VARCHAR(255) NOT NULL,
+  "lat" DOUBLE PRECISION NOT NULL,
+  "lon" DOUBLE PRECISION NOT NULL,
+  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+-- #endregion
+
+-- #region Create Users Table
+CREATE TABLE "users" (
+  "id" SERIAL PRIMARY KEY,
+  "email" VARCHAR(150) UNIQUE NOT NULL,
+  "password" VARCHAR(200) NOT NULL,
+  "name" VARCHAR(100) NOT NULL,
+  "tenantId" INTEGER NOT NULL REFERENCES "tenants" ("id") ON DELETE CASCADE,
+  "locationId" INTEGER NOT NULL REFERENCES "locations" ("id") ON DELETE CASCADE,
+  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+-- #endregion

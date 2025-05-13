@@ -1,5 +1,11 @@
-// src/users/user.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 import { Tenant } from '../tenants/tenant.entity';
 import { Location } from '../locations/location.entity';
@@ -13,14 +19,20 @@ export class User {
   email!: string;
 
   @Column()
-  password!: string; // You can hash the password before saving (more on that below)
+  password!: string;
 
   @Column()
   name!: string;
 
-  @ManyToOne(() => Tenant)
-  tenant!: string;
+  // @ManyToOne(() => Tenant)
+  // tenant!: Tenant;
 
-  @ManyToOne(() => Location)
-  location!: string;
+  // @ManyToOne(() => Location)
+  // location!: Location;
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt!: string;
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updatedAt!: string;
 }

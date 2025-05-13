@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { useTheme } from '@/context/ThemeContext';
-import { FiHome, FiUsers, FiMapPin, FiChevronRight, FiChevronLeft } from 'react-icons/fi';
+import { FiHome, FiUsers, FiMapPin, FiChevronRight, FiChevronLeft, FiShield } from 'react-icons/fi';
 import clsx from 'clsx';
 import { AiFillBank } from 'react-icons/ai';
 import { FaShapes } from 'react-icons/fa';
@@ -28,15 +28,15 @@ const navItems = [
         href: '/users'
     },
     {
+        icon: <FiShield />,
+        label: 'Permissions',
+        href: '/permissions'
+    },
+    {
         icon: <FaShapes />,
         label: 'Styleguide',
         href: '/ui'
     },
-    // {
-    //     icon: <FiShield />,
-    //     label: 'Permissions',
-    //     href: '/permissions'
-    // },
     // {
     //     icon: <FiSettings />,
     //     label: 'Settings',

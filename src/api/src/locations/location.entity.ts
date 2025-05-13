@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Tenant } from '../tenants/tenant.entity';
 
 @Entity('locations')
@@ -9,15 +16,21 @@ export class Location {
   @Column()
   name!: string;
 
-  @ManyToOne(() => Tenant)
-  tenant!: Tenant;
+  // @ManyToOne(() => Tenant)
+  // tenant!: Tenant;
 
   @Column()
   address!: string;
 
-  @Column()
-  lat!: number;
+  @Column('text')
+  lat!: string;
 
-  @Column()
-  lon!: number;
+  @Column('text')
+  lon!: string;
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt!: string;
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updatedAt!: string;
 }

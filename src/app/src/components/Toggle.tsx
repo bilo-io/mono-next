@@ -20,7 +20,7 @@ export const Toggle = <T,>({ options, value, onChange }: ToggleProps<T>) => {
     const { theme } = useTheme();
 
     return (
-        <div className="inline-flex rounded-lg border overflow-hidden">
+        <div className="inline-flex rounded-lg overflow-hidden">
             {options.map((option) => (
                 <button
                     key={option.value as string}

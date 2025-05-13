@@ -25,7 +25,7 @@ export class TenantsService {
   ): Promise<PaginatedResponse<Tenant>> {
     const query = this.repo
       .createQueryBuilder('tenant')
-      .orderBy('tenant.id', 'ASC');
+      .orderBy('tenant.createdAt', 'ASC');
     return paginate(query, page, limit);
   }
 
