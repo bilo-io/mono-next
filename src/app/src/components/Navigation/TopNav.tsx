@@ -1,4 +1,3 @@
-// components/TopBar.tsx
 'use client';
 import { useTheme } from '@/context/ThemeContext';
 import { FiMenu, FiSun, FiMoon } from 'react-icons/fi';

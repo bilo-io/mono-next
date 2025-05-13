@@ -1,9 +1,10 @@
 'use client';
 import React, { useState } from 'react';
 import { useTheme } from '@/context/ThemeContext';
-import { FiHome, FiSettings, FiMenu, FiUsers, FiShield, FiMapPin } from 'react-icons/fi';
+import { FiHome, FiUsers, FiMapPin, FiChevronRight, FiChevronLeft } from 'react-icons/fi';
 import clsx from 'clsx';
 import { AiFillBank } from 'react-icons/ai';
+import { FaShapes } from 'react-icons/fa';
 
 const navItems = [
     {
@@ -26,6 +27,11 @@ const navItems = [
         label: 'Users',
         href: '/users'
     },
+    {
+        icon: <FaShapes />,
+        label: 'Styleguide',
+        href: '/ui'
+    },
     // {
     //     icon: <FiShield />,
     //     label: 'Permissions',
@@ -45,19 +51,20 @@ export const SideNav = ({ mobile, toggleMobile }: { mobile?: boolean; toggleMobi
     return (
         <aside
             className={clsx(
-                'fixed top-0 left-0 h-full z-40 transition-all duration-300',
-                mobile ? 'w-64' : expanded ? 'w-64' : 'w-16',
+                'top-0 left-0 h-full z-40 transition-all duration-300',
+                mobile ? 'w-64' : expanded ? 'w-64' : 'w-12',
                 'overflow-hidden'
             )}
             style={{ backgroundColor: theme.SIDENAV_BG, color: theme.SIDENAV_TEXT }}
         >
             <div className="flex items-center justify-between px-4 py-3">
-                <span className="text-lg font-bold">{expanded ? 'Dashboard' : 'DB'}</span>
-                {!mobile && (
-                    <button onClick={() => setExpanded(!expanded)}>
-                        <FiMenu />
-                    </button>
-                )}
+                <span className="text-lg font-bold">
+                    {
+                        expanded
+                            ? 'RBAC'
+                            : ''
+                    }
+                </span>
                 {mobile && toggleMobile && (
                     <button onClick={toggleMobile}>
                         ✖
@@ -71,6 +78,16 @@ export const SideNav = ({ mobile, toggleMobile }: { mobile?: boolean; toggleMobi
                         {(!mobile && expanded) || mobile ? <span>{item.label}</span> : null}
                     </a>
                 ))}
+
+                <hr className='my-2 opacity-10' />
+
+                <button
+                    onClick={() => setExpanded(!expanded)}
+                    className='hidden md:flex items-center  ml-4 mb-2'
+                >
+                    <span className='mr-3'>{expanded ? <FiChevronLeft /> : <FiChevronRight />}</span>
+                    {expanded ? <span>Collapse</span> : null}
+                </button>
             </nav>
         </aside>
     );

@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
-// import { AddTenantModal } from '@/components/AddTenantModal';
 import { Layout } from '@/components/Navigation/Layout';
 import { Table } from '@/components/Table';
 import { type PaginatedResponse, Pagination } from '@/components/Pagination';
@@ -8,6 +8,13 @@ import { ReactNode, useState } from 'react';
 import type { ColDef } from 'ag-grid-community'
 import { Toggle } from '@/components/Toggle';
 import { FiTable, FiList } from 'react-icons/fi';
+import { AddTenantModal } from '@/components/Modals/AddTenantModal';
+import { ToggleFilters } from '@/components/FilterForm/ToggleFilters';
+import { toQueryString } from '@/util/query';
+import Async from '@/components/Async';
+import { Spinner } from '@/components/ui/Spinner';
+import { SkeletonList } from '@/components/ui/Skeleton/views/SkeletonList';
+import { Collapsible } from '@/components/ui/Collapsible';
 
 interface Tenant {
     id: number;
@@ -41,18 +48,24 @@ const viewOptions: {
 // #endregion
 
 export default function TenantsPage() {
-    const [page, setPage] = useState<number>(1)
-    const [limit, setLimit] = useState<number>(10)
     const [view, setView] = useState<ViewType>('list');
+    const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
+    const [query, setQuery] = useState<any>({
+        page: 1,
+        limit: 10
+    });
 
-    const { data: tenants, } = useFetch<PaginatedResponse<Tenant>>(`/tenants?page=${page}&limit=${limit}`)
+    const { data: tenants, loading, error, retry } = useFetch<PaginatedResponse<Tenant>>(`/tenants?${toQueryString(query)}`)
 
     const handlePagination = (
         page: number,
         limit: number
     ) => {
-        setPage(page);
-        setLimit(limit);
+        setQuery((prev: any) => ({
+            ...prev,
+            page,
+            limit
+        }))
     }
 
     return (
@@ -65,33 +78,53 @@ export default function TenantsPage() {
                         onChange={setView}
                         options={viewOptions}
                     />
-                    {/* <AddTenantModal /> */}
+                    <ToggleFilters
+                        isOpen={isFiltersOpen}
+                        onClick={() => setIsFiltersOpen((prev) => !prev)}
+                    />
+                    <AddTenantModal buttonText={'+ Add'} onSubmit={() => { }} />
                 </div>
             </div>
 
-            {view === 'table' && (
-                <Table<Tenant>
-                    rowData={tenants?.data || []}
-                    columnDefs={columns}
-                    height={'500px'}
-                />
-            )}
+            <Collapsible isOpen={isFiltersOpen}>
+                <div className='my-12'>
+                    Filters
+                </div>
+            </Collapsible>
 
-            {view === 'list' && (
-                <ul className="space-y-2">
-                    {tenants?.data?.map((tenant: Tenant) => (
-                        <li key={tenant.id} className="p-4 border rounded shadow">
-                            <div><strong>{tenant.name}</strong></div>
-                            <div>{tenant.domain}</div>
-                            <div className="text-sm text-gray-500">Created: {new Date(tenant.createdAt).toLocaleString()}</div>
-                        </li>
-                    ))}
-                </ul>
-            )}
+
+            <Async
+                isLoading={loading}
+                onRefresh={retry}
+                hasData={(tenants?.data?.length && tenants?.data?.length > 0) as boolean}
+                loader={<Spinner />}
+                preloader={<SkeletonList count={3} />}>
+                <>
+                    {view === 'table' && (
+                        <Table<Tenant>
+                            rowData={tenants?.data || []}
+                            columnDefs={columns}
+                            height={'500px'}
+                        />
+                    )}
+
+                    {view === 'list' && (
+                        <ul className="space-y-2">
+                            {tenants?.data?.map((tenant: Tenant) => (
+                                <li key={tenant.id} className="p-4 border rounded shadow">
+                                    <div><strong>{tenant.name}</strong></div>
+                                    <div>{tenant.domain}</div>
+                                    <div className="text-sm text-gray-500">Created: {new Date(tenant.createdAt).toLocaleString()}</div>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </>
+            </Async>
 
             <Pagination
-                page={page}
-                limit={limit}
+                page={query.page}
+                limit={query.limit}
                 onChange={handlePagination}
                 total={tenants?.meta?.total as number}
             />

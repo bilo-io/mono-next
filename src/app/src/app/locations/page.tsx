@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
-// import { AddLocationModal } from '@/components/AddLocationModal';
 import { Layout } from '@/components/Navigation/Layout';
 import { Table } from '@/components/Table';
 import { type PaginatedResponse, Pagination } from '@/components/Pagination';
@@ -8,6 +8,14 @@ import { ReactNode, useState } from 'react';
 import type { ColDef } from 'ag-grid-community'
 import { Toggle } from '@/components/Toggle';
 import { FiTable, FiList } from 'react-icons/fi';
+import { FilterField } from '@/components/FilterForm/FilterForm';
+import { AddLocationModal } from '@/components/Modals/AddLocationModal';
+import { ToggleFilters } from '@/components/FilterForm/ToggleFilters';
+import { toQueryString } from '@/util/query';
+import { Collapsible } from '@/components/ui/Collapsible';
+import { Spinner } from '@/components/ui/Spinner';
+import { SkeletonList } from '@/components/ui/Skeleton/views/SkeletonList';
+import Async from '@/components/Async';
 
 interface Location {
     id: number;
@@ -45,19 +53,68 @@ const viewOptions: {
 // #endregion
 
 export default function LocationsPage() {
-    const [page, setPage] = useState<number>(1)
-    const [limit, setLimit] = useState<number>(10)
     const [view, setView] = useState<ViewType>('list');
+    const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
+    const [query, setQuery] = useState<any>({
+        page: 1,
+        limit: 10
+    });
 
-    const { data: locations, } = useFetch<PaginatedResponse<Location>>(`/locations?page=${page}&limit=${limit}`)
+    const { data: locations, loading, retry } = useFetch<PaginatedResponse<Location>>(`/locations?${toQueryString(query)}`)
 
     const handlePagination = (
         page: number,
         limit: number
     ) => {
-        setPage(page);
-        setLimit(limit);
+        setQuery((prev: any) => ({
+            ...prev,
+            page,
+            limit
+        }))
     }
+
+    const handleFilterChange = (newQuery: any) => {
+        setQuery(newQuery);
+        console.log('Current query:', newQuery); // This is where you can use the query for your fetch logic
+    };
+
+    const filterFields: FilterField[] = [
+        {
+            name: 'name',
+            label: 'Location Name',
+            type: 'text',
+            placeholder: 'Filter by location name',
+        },
+        {
+            name: 'address',
+            label: 'Address',
+            type: 'text',
+            placeholder: 'Filter by address',
+        },
+        {
+            name: 'lat',
+            label: 'Latitude',
+            type: 'text',
+            placeholder: 'Filter by latitude',
+        },
+        {
+            name: 'lon',
+            label: 'Longitude',
+            type: 'text',
+            placeholder: 'Filter by longitude',
+        },
+        {
+            name: 'status',
+            label: 'Status',
+            type: 'select',
+            options: [
+                { value: '', label: 'All' },
+                { value: 'active', label: 'Active' },
+                { value: 'inactive', label: 'Inactive' },
+            ],
+        },
+    ];
+
 
     return (
         <Layout>
@@ -69,36 +126,67 @@ export default function LocationsPage() {
                         onChange={setView}
                         options={viewOptions}
                     />
-                    {/* <AddLocationModal /> */}
+                    <ToggleFilters
+                        isOpen={isFiltersOpen}
+                        onClick={() => setIsFiltersOpen((prev) => !prev)}
+                    />
+                    <AddLocationModal
+                        buttonText={'+ Add'}
+                        onSubmit={() => { }}
+                        tenants={[]}
+                    />
                 </div>
             </div>
 
-            {view === 'table' && (
-                <Table<Location>
-                    rowData={locations?.data || []}
-                    columnDefs={columns}
-                    height={'500px'}
-                />
-            )}
 
-            {view === 'list' && (
-                <ul className="space-y-2">
-                    {locations?.data?.map((location: Location) => (
-                        <li key={location.id} className="p-4 border rounded shadow">
-                            <div><strong>{location.name}</strong></div>
-                            <div>{location.address}</div>
-                            <div className="text-sm text-gray-500">
-                                Tenant: {location.name} | Lat: {location.lat}, Lon: {location.lon}
-                            </div>
-                            <div className="text-sm text-gray-500">Created: {new Date(location.createdAt).toLocaleString()}</div>
-                        </li>
-                    ))}
-                </ul>
-            )}
+            <Collapsible isOpen={isFiltersOpen}>
+                <div className='my-12'>
+                    Filters
+                </div>
+
+                {/* <FilterForm
+                    onChange={handleFilterChange}
+                    initialValues={query}
+                    fields={filterFields}
+                /> */}
+            </Collapsible>
+
+
+            <Async
+                isLoading={loading}
+                onRefresh={retry}
+                hasData={(locations?.data?.length && locations?.data?.length > 0) as boolean}
+                loader={<Spinner />}
+                preloader={<SkeletonList count={3} />}>
+                <>
+                    {view === 'table' && (
+                        <Table<Location>
+                            rowData={locations?.data || []}
+                            columnDefs={columns}
+                            height={'500px'}
+                        />
+                    )}
+
+                    {view === 'list' && (
+                        <ul className="space-y-2">
+                            {locations?.data?.map((location: Location) => (
+                                <li key={location.id} className="p-4 border rounded shadow">
+                                    <div><strong>{location.name}</strong></div>
+                                    <div>{location.address}</div>
+                                    <div className="text-sm text-gray-500">
+                                        Tenant: {location.name} | Lat: {location.lat}, Lon: {location.lon}
+                                    </div>
+                                    <div className="text-sm text-gray-500">Created: {new Date(location.createdAt).toLocaleString()}</div>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </>
+            </Async>
 
             <Pagination
-                page={page}
-                limit={limit}
+                page={query?.page}
+                limit={query?.limit}
                 onChange={handlePagination}
                 total={locations?.meta?.total as number}
             />

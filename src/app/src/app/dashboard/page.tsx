@@ -1,4 +1,4 @@
-// app/dashboard/page.tsx
+'use client'
 import { Layout } from '@/components/Navigation/Layout';
 
 export default function DashboardPage() {

@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
-import { AddUserModal } from '@/components/AddUserModal';
+import { AddUserModal } from '@/components/Modals/AddUserModal';
 import { Layout } from '@/components/Navigation/Layout';
 import { Table } from '@/components/Table';
 import { type PaginatedResponse, Pagination } from '@/components/Pagination';
@@ -8,6 +9,12 @@ import { ReactNode, useState } from 'react';
 import type { ColDef } from 'ag-grid-community'
 import { Toggle } from '@/components/Toggle';
 import { FiTable, FiList } from 'react-icons/fi';
+import Async from '@/components/Async';
+import { Spinner } from '@/components/ui/Spinner';
+import { SkeletonList } from '@/components/ui/Skeleton/views/SkeletonList';
+import { ToggleFilters } from '@/components/FilterForm/ToggleFilters';
+import { toQueryString } from '@/util/query';
+import { Collapsible } from '@/components/ui/Collapsible';
 
 interface User {
     id: number;
@@ -31,28 +38,34 @@ const columns: ColDef<User>[] = [
 ];
 
 type ViewType = 'table' | 'list';
-const viewOptions: { 
+const viewOptions: {
     value: ViewType,
     icon: ReactNode
 }[] = [
-    { value: 'table', icon: <FiTable className="w-4 h-4" /> },
-    { value: 'list', icon: <FiList className="w-4 h-4" /> },
+        { value: 'table', icon: <FiTable className="w-4 h-4" /> },
+        { value: 'list', icon: <FiList className="w-4 h-4" /> },
     ];
 // #endregion
 
 export default function UsersPage() {
-    const [page, setPage] = useState<number>(1)
-    const [limit, setLimit] = useState<number>(10)
     const [view, setView] = useState<ViewType>('list');
+    const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
+    const [query, setQuery] = useState<any>({
+        page: 1,
+        limit: 10
+    });
 
-    const { data: users, } = useFetch<PaginatedResponse<User>>(`/users?page=${page}&limit=${limit}`)
+    const { data: users, loading, retry } = useFetch<PaginatedResponse<User>>(`/users?${toQueryString(query)}`)
 
     const handlePagination = (
         page: number,
         limit: number
     ) => {
-        setPage(page);
-        setLimit(limit);
+        setQuery((prev: any) => ({
+            ...prev,
+            page,
+            limit
+        }))
     }
 
     return (
@@ -60,38 +73,56 @@ export default function UsersPage() {
             <div className="text-2xl font-bold mb-4 flex flex-row items-center justify-between">
                 <div>Users</div>
                 <div className="flex flex-row h-full items-center gap-8">
-                    <Toggle<ViewType> 
+                    <Toggle<ViewType>
                         value={view}
                         onChange={setView}
                         options={viewOptions}
                     />
-                    <AddUserModal />
+                    <ToggleFilters
+                        isOpen={isFiltersOpen}
+                        onClick={() => setIsFiltersOpen((prev) => !prev)}
+                    />
+                    <AddUserModal buttonText={'+ Add'} onAddUser={() => { }} />
                 </div>
             </div>
 
-            {view === 'table' && (
-                <Table<User>
-                    rowData={users?.data || []}
-                    columnDefs={columns}
-                    height={'500px'}
-                />
-            )}
+            <Collapsible isOpen={isFiltersOpen}>
+                <div className='my-12'>
+                    Filters
+                </div>
+            </Collapsible>
 
-            {view === 'list' && (
-                <ul className="space-y-2">
-                    {users?.data?.map((user: User) => (
-                        <li key={user.id} className="p-4 border rounded shadow">
-                            <div><strong>{user.name}</strong></div>
-                            <div>{user.email}</div>
-                            <div className="text-sm text-gray-500">Created: {new Date(user.createdAt).toLocaleString()}</div>
-                        </li>
-                    ))}
-                </ul>
-            )}
+            <Async
+                isLoading={loading}
+                onRefresh={retry}
+                hasData={(users?.data?.length && users?.data?.length > 0) as boolean}
+                loader={<Spinner />}
+                preloader={<SkeletonList count={3} />}>
+                <>
+                    {view === 'table' && (
+                        <Table<User>
+                            rowData={users?.data || []}
+                            columnDefs={columns}
+                            height={'500px'}
+                        />
+                    )}
+                    {view === 'list' && (
+                        <ul className="space-y-2">
+                            {users?.data?.map((user: User) => (
+                                <li key={user.id} className="p-4 border rounded shadow">
+                                    <div><strong>{user.name}</strong></div>
+                                    <div>{user.email}</div>
+                                    <div className="text-sm text-gray-500">Created: {new Date(user.createdAt).toLocaleString()}</div>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </>
+            </Async>
 
             <Pagination
-                page={page}
-                limit={limit}
+                page={query.page}
+                limit={query.limit}
                 onChange={handlePagination}
                 total={users?.meta?.total as number}
             />
