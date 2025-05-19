@@ -1,4 +1,3 @@
-// src/common/pagination/paginate.ts
 import { ObjectLiteral, SelectQueryBuilder } from 'typeorm';
 
 export interface PaginationMeta {

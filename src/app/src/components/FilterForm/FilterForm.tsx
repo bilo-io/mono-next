@@ -26,15 +26,12 @@ export const FilterForm: React.FC<FilterFormProps> = ({
         defaultValues: initialValues,
     });
 
-    // Watch for form field changes
     const watchFields = watch();
 
-    // Handle form submission (could be used for a submit button)
     const onSubmit = (data: any) => {
         onChange(data);
     };
 
-    // Update the query on any field change
     React.useEffect(() => {
         onChange(watchFields);
     }, [watchFields, onChange]);

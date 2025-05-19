@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useState } from 'react';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 interface FetchResult<T> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     retry: (overrideBody?: Record<string, T | any> | FormData | string) => void;
     data: T | null;
     loading: boolean;
@@ -53,16 +54,30 @@ export function useFetch<T>(
                     cache: 'no-store',
                 });
 
-                if (!res.ok) throw new Error(`Error: ${res.statusText}`);
-
                 const contentType = res.headers.get('content-type');
-                const json = contentType?.includes('application/json') ? await res.json() : null;
+                const isJson = contentType?.includes('application/json');
+
+                if (!res.ok) {
+                    const errorBody = isJson ? await res.json() : { message: res.statusText };
+                    const errorMessage = errorBody?.message || 'Unknown error';
+                    const errorObj = new Error(errorMessage);
+                    (errorObj as any).status = res.status;
+                    (errorObj as any).details = errorBody;
+
+                    console.log('try', { error })
+
+                    // onError?.(errorObj)
+                    throw errorObj;
+                }
+
+                const json = isJson ? await res.json() : null;
 
                 setData(json);
                 setError(null);
                 onSuccess?.(json);
             } catch (err: unknown) {
-                const errorObj = err as Error;
+                const errorObj = err as any;
+                console.log('catch', { error })
                 setError(errorObj);
                 setData(null);
                 onError?.(errorObj);

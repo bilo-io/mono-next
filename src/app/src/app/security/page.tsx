@@ -9,8 +9,8 @@ import { FiTable, FiList } from 'react-icons/fi';
 import { toQueryString } from '@/util/query';
 import { useToast } from '@/context/ToastProvider';
 import { Tabs } from '@/components/ui/Tabs';
-import { PermissionsView } from '@/components/Views/Permissions/PermissionsView';
-import { RolesView } from '@/components/Views/Permissions/RolesView';
+import { PermissionsView } from '@/components/Views/Security/PermissionsView';
+import { RolesView } from '@/components/Views/Security/RolesView';
 
 export interface Permission {
     id: number;
@@ -91,12 +91,12 @@ export default function PermissionsPage() {
             <Tabs
                 tabs={[
                     {
-                        label: 'Permissions',
-                        view: <PermissionsView />,
-                    },
-                    {
                         label: 'Roles',
                         view: <RolesView />,
+                    },
+                    {
+                        label: 'Permissions',
+                        view: <PermissionsView />,
                     },
                 ]}
             />

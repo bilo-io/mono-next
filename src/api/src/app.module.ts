@@ -9,20 +9,21 @@ import { TenantsModule } from './tenants/tenants.module';
 import { Tenant } from './tenants/tenant.entity';
 import { Location } from './locations/location.entity';
 import { LocationsModule } from './locations/locations.module';
+import { RolesModule } from './roles/roles.module';
+import { PermissionsModule } from './permissions/permissions.module';
 
 @Module({
   imports: [
-    // Load env variables
     ConfigModule.forRoot({
       isGlobal: true,
     }),
 
-    // TypeORM DB connection
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const url = new URL(config.get('DATABASE_URL') as string);
+
         return {
           type: 'postgres',
           host: url.hostname,
@@ -32,6 +33,7 @@ import { LocationsModule } from './locations/locations.module';
           database: url.pathname.replace('/', ''),
           ssl: false,
           entities: [Tenant, Location, User],
+          autoLoadEntities: true,
         };
       },
     }),
@@ -40,6 +42,8 @@ import { LocationsModule } from './locations/locations.module';
     TenantsModule,
     LocationsModule,
     UsersModule,
+    RolesModule,
+    PermissionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

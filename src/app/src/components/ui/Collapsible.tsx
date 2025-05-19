@@ -43,7 +43,7 @@ export const Collapsible: React.FC<CollapsibleProps> = ({
                 {children}
             </div>
 
-            {!isOpen && <hr className="border-t border-gray-300 dark:border-gray-600 my-2" />}
+            {!isOpen && <div className="border-t h-4 border-gray-300 dark:border-gray-600 bg-opacity-10 my-2" />}
         </div>
     );
 };

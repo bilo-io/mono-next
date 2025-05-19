@@ -2,13 +2,13 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 
-import { Tenant } from '../tenants/tenant.entity';
-import { Location } from '../locations/location.entity';
+import { Role } from '../roles/role.entity';
 
 @Entity('users')
 export class User {
@@ -24,15 +24,13 @@ export class User {
   @Column()
   name!: string;
 
-  // @ManyToOne(() => Tenant)
-  // tenant!: Tenant;
-
-  // @ManyToOne(() => Location)
-  // location!: Location;
-
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt!: string;
 
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt!: string;
+
+  // @ManyToMany(() => Role)
+  // @JoinTable()
+  // roles!: Role[];
 }

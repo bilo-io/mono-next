@@ -4,6 +4,9 @@ export type Theme = {
     PRIMARY: string;
     SIDENAV_BG: string;
     SIDENAV_TEXT: string;
+    SUCCESS: string;
+    WARNING: string;
+    ERROR: string;
 };
 
 export const LIGHT_THEME = {
@@ -12,6 +15,9 @@ export const LIGHT_THEME = {
     PRIMARY: '#00aedd',
     SIDENAV_BG: '#f1f5f9',
     SIDENAV_TEXT: '#0f172a',
+    SUCCESS: '',
+    WARNING: '',
+    ERROR: '',
 };
 
 export const DARK_THEME: Theme = {
@@ -20,4 +26,7 @@ export const DARK_THEME: Theme = {
     PRIMARY: '#00aedd',
     SIDENAV_BG: '#1e293b',
     SIDENAV_TEXT: '#f8fafc',
+    SUCCESS: '',
+    WARNING: '',
+    ERROR: '',
 };

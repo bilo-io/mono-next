@@ -1,9 +1,18 @@
-// src/users/users.controller.ts
-import { Controller, Post, Body, Get, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Query,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { PaginatedResponse } from '../common/pagination/paginate';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -26,5 +35,19 @@ export class UsersController {
   @Get(':id')
   findById(@Param('id') id: string): Promise<User | null> {
     return this.usersService.findById(+id); // Cast to number if `id` is numeric
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<User> {
+    return this.usersService.update(+id, updateUserDto);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string): Promise<{ message: string }> {
+    await this.usersService.remove(+id);
+    return { message: `User with ID ${id} has been deleted` };
   }
 }

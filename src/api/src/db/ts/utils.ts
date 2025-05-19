@@ -21,7 +21,6 @@ const firstNames = [
   'Steven',
   'Andrew',
   'Kenneth',
-  // Add more names as required
 ];
 
 const lastNames = [
@@ -45,7 +44,6 @@ const lastNames = [
   'Garcia',
   'Martinez',
   'Roberts',
-  // Add more names as required
 ];
 
 const streets = [
@@ -59,7 +57,11 @@ const streets = [
   'Oak St',
   'Pine St',
   'River Rd',
-  // Add more street names as required
+  'Castle street',
+  'Prestwich Crescent',
+  'Main road',
+  'Kloog Rd',
+  'Milner Rd',
 ];
 
 const suburbs = [
@@ -83,7 +85,6 @@ const suburbs = [
   'Dalston',
   'Croydon',
   'Greenwich',
-  // Add more suburbs as required
 ];
 
 const cities = [
@@ -97,7 +98,6 @@ const cities = [
   'Madrid',
   'Rome',
   'Sydney',
-  // Add more cities as required
 ];
 
 const zipCodes = [
@@ -111,7 +111,6 @@ const zipCodes = [
   '80001',
   '90001',
   '11001',
-  // Add more zip codes as required
 ];
 
 export const generateBusinessName = (): string => {
@@ -167,10 +166,10 @@ export const generateDateString = (): string => {
 
 export const generateLat = (): string => {
   const lat = faker.number.float({ min: -34.5, max: 51.5 });
-  return lat.toFixed(4); // rounds to 4 decimal places
+  return lat.toFixed(4);
 };
 
 export const generateLon = (): string => {
   const lon = faker.number.float({ min: -18.5, max: 3.5 });
-  return lon.toFixed(4); // rounds to 4 decimal places
+  return lon.toFixed(4);
 };

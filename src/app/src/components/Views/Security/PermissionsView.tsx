@@ -57,7 +57,10 @@ export const PermissionsView: React.FC<any> = () => {
         auto: true,
         method: 'GET',
         onSuccess: () => showToast('Data loaded', 'success'),
-        onError: () => showToast('Data failed to load', 'warning')
+        onError: (error: unknown) => {
+            showToast(`Data failed to load\n${error?.message}`, 'warning')
+            console.log({ error })
+        }
     })
     const { retry: createData } = useFetch<PaginatedResponse<Permission>>(`/permissions`, {
         auto: false,

@@ -88,8 +88,8 @@ export const RolesView: React.FC<any> = () => {
 
     return (
         <div>
-            <div className="text-2xl font-bold mb-4 flex flex-row items-center justify-between">
-                {/* <div>Roles</div> */}
+            <div className="text-md mb-4 flex flex-col flex-wrap-reverse md:flex-row md:flex-nowrap items-center justify-between">
+                <div>Define Roles that have a set of Permissions. Once defined, roles can be assigned to users.</div>
                 <div />
                 <div className="flex flex-row h-full items-center gap-8">
                     <Toggle<ViewType>

@@ -1,7 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { AppDataSource } from './data-source';
-import { Tenant } from '../../tenants/tenant.entity';
 import { Location } from '../../locations/location.entity';
-import { User } from '../../users/user.entity';
 
 async function initializeDatabase(): Promise<void> {
   try {
@@ -21,7 +20,7 @@ async function initializeDatabase(): Promise<void> {
     `);
     console.log(
       '📦 Tables created:',
-      tables.map((t: any) => t.table_name),
+      tables?.map?.((t: any) => t?.table_name),
     );
   } catch (error) {
     console.error('❌ Failed to initialize DB:', error);
@@ -31,4 +30,4 @@ async function initializeDatabase(): Promise<void> {
   }
 }
 
-initializeDatabase();
+void initializeDatabase();

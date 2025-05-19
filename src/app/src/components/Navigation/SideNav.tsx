@@ -29,8 +29,8 @@ const navItems = [
     },
     {
         icon: <FiShield />,
-        label: 'Permissions',
-        href: '/permissions'
+        label: 'Security',
+        href: '/security'
     },
     {
         icon: <FaShapes />,
