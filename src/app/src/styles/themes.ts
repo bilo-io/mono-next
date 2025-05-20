@@ -15,9 +15,9 @@ export const LIGHT_THEME = {
     PRIMARY: '#00aedd',
     SIDENAV_BG: '#f1f5f9',
     SIDENAV_TEXT: '#0f172a',
-    SUCCESS: '',
-    WARNING: '',
-    ERROR: '',
+    SUCCESS: '#16a34a',
+    WARNING: '#facc15',
+    ERROR: '#dc2626',
 };
 
 export const DARK_THEME: Theme = {
@@ -26,7 +26,7 @@ export const DARK_THEME: Theme = {
     PRIMARY: '#00aedd',
     SIDENAV_BG: '#1e293b',
     SIDENAV_TEXT: '#f8fafc',
-    SUCCESS: '',
-    WARNING: '',
-    ERROR: '',
+    SUCCESS: '#16a34a',
+    WARNING: '#facc15',
+    ERROR: '#dc2626',
 };

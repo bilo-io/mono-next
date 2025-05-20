@@ -133,7 +133,7 @@ export default function UsersPage() {
                         />
                     )}
                     {view === 'list' && (
-                        <ul className="space-y-2">
+                        <ul className="space-y-2 max-h-[85vh] overflow-hidden overflow-y-auto">
                             {users?.data?.map((user: User) => (
                                 <li key={user.id} className="p-4 border rounded shadow">
                                     <div><strong>{user.name}</strong></div>

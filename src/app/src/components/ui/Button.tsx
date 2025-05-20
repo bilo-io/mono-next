@@ -27,22 +27,22 @@ export const Button: React.FC<ButtonProps> = ({
             border: 'none',
         },
         secondary: {
-            backgroundColor: '#64748b', // slate-500
+            backgroundColor: '#64748b',
             color: '#fff',
             border: 'none',
         },
         success: {
-            backgroundColor: '#16a34a', // green-600
+            backgroundColor: theme.SUCCESS,
             color: '#fff',
             border: 'none',
         },
         warning: {
-            backgroundColor: '#facc15', // yellow-400
+            backgroundColor: theme.WARNING,
             color: '#000',
             border: 'none',
         },
         error: {
-            backgroundColor: '#dc2626', // red-600
+            backgroundColor: theme.ERROR,
             color: '#fff',
             border: 'none',
         },
