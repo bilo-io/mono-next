@@ -15,10 +15,13 @@ import { toQueryString } from '@/util/query';
 import { Collapsible } from '@/components/ui/Collapsible';
 import { useToast } from '@/context/ToastProvider';
 import { AddRoleModal } from '@/components/Modals/AddRoleModal';
+import { Permission } from './PermissionsView';
+import { GiConsoleController } from 'react-icons/gi';
 
 export interface Role {
     id: string | number;
     name: string;
+    permissions: string[]
 }
 
 // #region VIEW CONFIG
@@ -36,9 +39,13 @@ const viewOptions: {
         { value: 'list', icon: <FiList className="w-4 h-4" /> },
     ];
 // #endregion
-type RolesViewProps = object
+type RolesViewProps = {
+    permissions: Permission[]
+}
 
-export const RolesView: React.FC<RolesViewProps> = () => {
+export const RolesView: React.FC<RolesViewProps> = ({
+    permissions
+}) => {
     // #region HOOKS
     const [view, setView] = useState<ViewType>('list');
     const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
@@ -49,15 +56,18 @@ export const RolesView: React.FC<RolesViewProps> = () => {
         page: 1,
         limit: 10
     });
-
+    
     const { showToast } = useToast()
-    const { data: roles, loading, retry: fetchData } = useFetch<PaginatedResponse<Role>>(`/roles?${toQueryString(query)}`, {
+    const { data: roles, loading, retry: fetchData } = useFetch<Role[]>(`/roles?${toQueryString(query)}`, {
         auto: true,
         method: 'GET',
-        onSuccess: () => showToast('Data loaded (roles)', 'success'),
+        onSuccess: (data) => {
+            console.log({roles: data})
+            showToast('Data loaded (roles)', 'success')
+        },
         onError: () => showToast('Data failed to load', 'warning')
     })
-    const { retry: createData } = useFetch<PaginatedResponse<Role>>(`/roles`, {
+    const { retry: createData } = useFetch<PaginatedResponse<Role>>(`/roles/create`, {
         auto: false,
         method: 'POST',
         onSuccess: () => {
@@ -95,6 +105,7 @@ export const RolesView: React.FC<RolesViewProps> = () => {
                     <AddRoleModal
                         buttonText={'+ Add'}
                         onSubmit={handleCreate}
+                        permissions={permissions}
                     />
                 </div>
             </div>
@@ -108,23 +119,26 @@ export const RolesView: React.FC<RolesViewProps> = () => {
             <Async
                 isLoading={loading}
                 onRefresh={fetchData}
-                hasData={(roles?.data?.length && roles?.data?.length > 0) as boolean}
+                hasData={(roles?.length && roles?.length > 0) as boolean}
                 loader={<Spinner />}
                 preloader={<SkeletonList count={3} />}>
                 <>
                     {view === 'table' && (
                         <Table<Role>
-                            rowData={roles?.data || []}
+                            rowData={roles || []}
                             columnDefs={columns}
                             height={'500px'}
                         />
                     )}
                     {view === 'list' && (
                         <ul className="space-y-2">
-                            {roles?.data?.map((role: Role) => (
+                            {roles?.map((role: Role) => (
                                 <li key={role.id} className="p-4 border rounded shadow">
                                     <div><strong>{role.name}</strong></div>
-                                    <div>{role.name}</div>
+                                    {/* <div>Permissions: {role.permissions.map((permission) => (
+                                        <span key={permission}>{permission}</span>
+                                    ))}</div> */}
+
                                     {/* <div className="text-sm text-gray-500">Created: {new Date(role.createdAt).toLocaleString()}</div> */}
                                 </li>
                             ))}

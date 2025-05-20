@@ -43,9 +43,13 @@ const viewOptions: {
         { value: 'list', icon: <FiList className="w-4 h-4" /> },
     ];
 // #endregion
-type PermissionsViewProps = object;
+type PermissionsViewProps = {
+    onUpdatePermissions: (permissions: Permission[]) => void
+};
 
-export const PermissionsView: React.FC<PermissionsViewProps> = () => {
+export const PermissionsView: React.FC<PermissionsViewProps> = ({
+    onUpdatePermissions
+}) => {
     // #region HOOKS
     const [view, setView] = useState<ViewType>('list');
     const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
@@ -61,7 +65,10 @@ export const PermissionsView: React.FC<PermissionsViewProps> = () => {
     const { data: permissions, loading, retry: fetchData } = useFetch<Permission[]>(`/permissions?${toQueryString(query)}`, {
         auto: true,
         method: 'GET',
-        onSuccess: () => showToast('Data loaded (permissions)', 'success'),
+        onSuccess: (data) => {
+            onUpdatePermissions(data)
+            showToast('Data loaded (permissions)', 'success')
+        },
         onError: (error: unknown) => {
             // @ts-expect-error cutting corners
             showToast(`Data failed to load\n${error?.message}`, 'warning')

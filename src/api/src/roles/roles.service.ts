@@ -30,32 +30,25 @@ export class RolesService {
     const role = new Role();
     role.name = name;
 
-    // Optional: assign permissions if provided
     if (permissionIds?.length) {
       role.permissions = permissionIds.map((id) => {
-        const perm = new Permission();
-        perm.id = id;
-        return perm;
+        const p = new Permission();
+        p.id = id;
+        return p;
       });
     }
 
     if (parentId) {
-      const parent = await this.roleRepo.findOne({
-        where: { id: parentId },
-        relations: ['parent'],
-      });
-      if (!parent) {
-        throw new Error(`Parent role with id ${parentId} not found`);
-      }
-      role.parent = parent;
-      // role.level = parent.level + 1;
-      await this.roleRepo.save(role);
-    } else {
-      // role.level = 0;
+      const parent = await this.roleRepo.findOne({ where: { id: parentId } });
+      // @ts-expect-error undefined is not a valid type for Role | null (but we're removing it here, as the topmost node has no tree)
+      role.parent = parent ?? undefined;
     }
 
-    // ✅ Let TreeRepository handle the level
-    return this.roleRepo.save(role);
+    const saved = await this.roleRepo.save(role);
+
+    // ✅ Use tree traversal to return role with level populated
+    const tree = await this.roleRepo.findAncestorsTree(saved);
+    return this.findNodeInTree(tree, saved.id);
   }
 
   async assignPermission(roleId: string, permissionNames: string[]) {
@@ -91,5 +84,20 @@ export class RolesService {
 
   async remove(id: string): Promise<void> {
     await this.roleRepo.delete(id);
+  }
+
+  private findNodeInTree(tree: Role, id: string): Role {
+    if (tree.id === id) return tree;
+    for (const child of tree.children || []) {
+      const result = this.findNodeInTree(child, id);
+      if (result) return result;
+    }
+    throw new Error(`Role with id ${id} not found in tree`);
+  }
+
+  async getRoleWithLevel(id: string): Promise<Role> {
+    const role = await this.roleRepo.findOne({ where: { id } });
+    const tree = await this.roleRepo.findAncestorsTree(role!);
+    return this.findNodeInTree(tree, id);
   }
 }

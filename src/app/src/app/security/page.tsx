@@ -4,6 +4,7 @@ import { Layout } from '@/components/Navigation/Layout';
 import { Tabs } from '@/components/ui/Tabs';
 import { PermissionsView } from '@/components/Views/Security/PermissionsView';
 import { RolesView } from '@/components/Views/Security/RolesView';
+import { useState } from 'react';
 
 export interface Permission {
     id: number;
@@ -14,17 +15,19 @@ export interface Permission {
 }
 
 export default function PermissionsPage() {
+    const [permissions, setPermissions] = useState<Permission[]>([])
+
     return (
         <Layout>
             <Tabs
                 tabs={[
                     {
                         label: 'Roles',
-                        view: <RolesView />,
+                        view: <RolesView permissions={permissions} />,
                     },
                     {
                         label: 'Permissions',
-                        view: <PermissionsView />,
+                        view: <PermissionsView onUpdatePermissions={setPermissions} />,
                     },
                 ]}
             />
@@ -32,6 +35,3 @@ export default function PermissionsPage() {
         </Layout>
     );
 }
-
-
-{/*  */ }

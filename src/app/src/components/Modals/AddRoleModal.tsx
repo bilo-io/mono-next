@@ -1,33 +1,38 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // components/modals/AddRoleModal.tsx
 'use client';
 import React, { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Role } from '@/components/Views/Security/RolesView';
+import { Permission } from '../Views/Security/PermissionsView';
+import Select, { DropdownValue } from '../ui/Select';
 
 interface AddRoleModalProps {
     onSubmit: (role: Role) => void;
     buttonText?: string;
+    permissions: Permission[]
 }
 
 export const AddRoleModal: React.FC<AddRoleModalProps> = ({
     onSubmit,
     buttonText = 'Add Role',
+    permissions
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
+    const [rolePermissions, setRolePermissions] = useState<DropdownValue>()
 
     const handleOpen = () => setIsOpen(true);
     const handleClose = () => {
         setIsOpen(false);
         setName('');
-        setEmail('');
+        setRolePermissions([])
     };
 
     const handleSubmit = () => {
-        if (name.trim() && email.trim()) {
-            onSubmit({ name } as Role);
+        if (name.trim()) {
+            onSubmit({ name, permissions: rolePermissions } as Role);
             handleClose();
         }
     };
@@ -65,6 +70,28 @@ export const AddRoleModal: React.FC<AddRoleModalProps> = ({
                                 placeholder="Jane Doe"
                             />
                         </div>
+
+                        <label>
+                            Permissions:
+                            <Select
+                                isMulti
+                                value={rolePermissions as string[]}
+                                onChange={data => setRolePermissions(data)}
+                                style={{
+                                    width: '100%',
+                                    padding: '0.5rem',
+                                    borderRadius: '6px',
+                                    border: '1px solid #ccc',
+                                }}
+                                // @ts-ignore
+                                options={
+                                    permissions.map((p: Permission) => ({
+                                        label: p.name,
+                                        value: p.id,
+                                    }))
+                                }
+                            />
+                        </label>
                     </div>
                 </Modal>
             )}
