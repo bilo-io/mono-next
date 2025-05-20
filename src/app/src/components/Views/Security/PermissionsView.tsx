@@ -1,7 +1,7 @@
 'use client'
 
 import { Table } from '@/components/Table';
-import { type PaginatedResponse, Pagination } from '@/components/Pagination';
+import { type PaginatedResponse } from '@/components/Pagination';
 import { useFetch } from '@/hooks/useFetch';
 import { ReactNode, useState } from 'react';
 import type { ColDef } from 'ag-grid-community'
@@ -14,6 +14,7 @@ import { ToggleFilters } from '@/components/FilterForm/ToggleFilters';
 import { toQueryString } from '@/util/query';
 import { Collapsible } from '@/components/ui/Collapsible';
 import { useToast } from '@/context/ToastProvider';
+import { AddPermissionModal } from '@/components/Modals/AddPermissionModal';
 
 export interface Permission {
     id: string | number;
@@ -53,10 +54,10 @@ export const PermissionsView: React.FC<any> = () => {
     });
 
     const { showToast } = useToast()
-    const { data: permissions, loading, retry: fetchData } = useFetch<PaginatedResponse<Permission>>(`/permissions?${toQueryString(query)}`, {
+    const { data: permissions, loading, retry: fetchData } = useFetch<Permission[]>(`/permissions?${toQueryString(query)}`, {
         auto: true,
         method: 'GET',
-        onSuccess: () => showToast('Data loaded', 'success'),
+        onSuccess: () => showToast('Data loaded (permissions)', 'success'),
         onError: (error: unknown) => {
             showToast(`Data failed to load\n${error?.message}`, 'warning')
             console.log({ error })
@@ -104,10 +105,10 @@ export const PermissionsView: React.FC<any> = () => {
                         isOpen={isFiltersOpen}
                         onClick={() => setIsFiltersOpen((prev) => !prev)}
                     />
-                    {/* <AddPermissionModal
+                    <AddPermissionModal
                         buttonText={'+ Add'}
                         onSubmit={handleCreate}
-                    /> */}
+                    />
                 </div>
             </div>
 
@@ -120,7 +121,7 @@ export const PermissionsView: React.FC<any> = () => {
             <Async
                 isLoading={loading}
                 onRefresh={fetchData}
-                hasData={(permissions?.data?.length && permissions?.data?.length > 0) as boolean}
+                hasData={(permissions?.length && permissions?.length > 0) as boolean}
                 loader={<Spinner />}
                 preloader={<SkeletonList count={3} />}>
                 <>
@@ -133,24 +134,16 @@ export const PermissionsView: React.FC<any> = () => {
                     )}
                     {view === 'list' && (
                         <ul className="space-y-2">
-                            {permissions?.data?.map((permission: Permission) => (
+                            {permissions?.map((permission: Permission) => (
                                 <li key={permission.id} className="p-4 border rounded shadow">
                                     <div><strong>{permission.name}</strong></div>
-                                    <div>{permission.email}</div>
-                                    <div className="text-sm text-gray-500">Created: {new Date(permission.createdAt).toLocaleString()}</div>
+                                    {/* <div className="text-sm text-gray-500">Created: {new Date(permission.createdAt).toLocaleString()}</div> */}
                                 </li>
                             ))}
                         </ul>
                     )}
                 </>
             </Async>
-
-            <Pagination
-                page={query.page}
-                limit={query.limit}
-                onChange={handlePagination}
-                total={permissions?.meta?.total as number}
-            />
         </div>
     )
 }

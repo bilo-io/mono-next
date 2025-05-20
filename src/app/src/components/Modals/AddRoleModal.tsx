@@ -1,18 +1,18 @@
-// components/modals/AddUserModal.tsx
+// components/modals/AddRoleModal.tsx
 'use client';
 import React, { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
-import { User } from '@/app/users/page';
+import { Role } from '@/components/Views/Security/RolesView';
 
-interface AddUserModalProps {
-    onSubmit: (user: User) => void;
+interface AddRoleModalProps {
+    onSubmit: (role: Role) => void;
     buttonText?: string;
 }
 
-export const AddUserModal: React.FC<AddUserModalProps> = ({
+export const AddRoleModal: React.FC<AddRoleModalProps> = ({
     onSubmit,
-    buttonText = 'Add User',
+    buttonText = 'Add Role',
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [name, setName] = useState('');
@@ -27,7 +27,7 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({
 
     const handleSubmit = () => {
         if (name.trim() && email.trim()) {
-            onSubmit({ name, email } as User);
+            onSubmit({ name } as Role);
             handleClose();
         }
     };
@@ -40,7 +40,7 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({
 
             {isOpen && (
                 <Modal
-                    title="Add New User"
+                    title="Add New Role"
                     onCancel={handleClose}
                     onSubmit={handleSubmit}
                     submitText="Submit"
@@ -63,24 +63,6 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({
                                     border: '1px solid #ccc',
                                 }}
                                 placeholder="Jane Doe"
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem' }}>
-                                Email
-                            </label>
-                            <input
-                                id="email"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                style={{
-                                    width: '100%',
-                                    padding: '0.5rem',
-                                    borderRadius: '4px',
-                                    border: '1px solid #ccc',
-                                }}
-                                placeholder="jane@example.com"
                             />
                         </div>
                     </div>

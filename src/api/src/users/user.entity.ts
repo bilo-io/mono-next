@@ -30,7 +30,7 @@ export class User {
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt!: string;
 
-  // @ManyToMany(() => Role)
-  // @JoinTable()
-  // roles!: Role[];
+  @ManyToMany(() => Role)
+  @JoinTable()
+  roles!: Role[];
 }

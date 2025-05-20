@@ -4,6 +4,7 @@
 import clsx from 'clsx'
 import { createContext, useCallback, useContext, useState } from 'react'
 import { AiOutlineCheckCircle, AiOutlineInfoCircle, AiOutlineWarning, AiOutlineCloseCircle } from 'react-icons/ai'
+import { useTheme } from './ThemeContext'
 
 type ToastType = 'success' | 'info' | 'error' | 'warning'
 
@@ -27,6 +28,7 @@ export const useToast = (): ToastContextType => {
 
 export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
     const [toasts, setToasts] = useState<Toast[]>([])
+    const { theme } = useTheme();
 
     const showToast = useCallback((message: React.ReactNode, type: ToastType = 'info') => {
         const id = Date.now().toString()
@@ -52,7 +54,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
                     <div
                         key={toast.id}
                         className={clsx(
-                            'flex items-start gap-2 p-4 rounded-md shadow-md bg-white dark:bg-zinc-800 border transition-opacity duration-300 opacity-100 animate-fade-in',
+                            'flex items-start gap-2 p-4 rounded-md shadow-md border transition-opacity duration-300 opacity-100 animate-fade-in',
                             {
                                 'border-green-500': toast.type === 'success',
                                 'border-blue-500': toast.type === 'info',
@@ -60,9 +62,17 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
                                 'border-red-500': toast.type === 'error',
                             }
                         )}
+                        style={{
+                            backgroundColor: theme.BACKGROUND
+                        }}
                     >
                         {icons[toast.type]}
-                        <div className="text-sm text-zinc-800 dark:text-zinc-100">{toast.message}</div>
+                        <div
+                            className="text-sm"
+                            style={{
+                                color: theme.TEXT
+                            }}
+                        >{toast.message}</div>
                     </div>
                 ))}
             </div>

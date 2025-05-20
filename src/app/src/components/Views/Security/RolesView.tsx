@@ -14,6 +14,7 @@ import { ToggleFilters } from '@/components/FilterForm/ToggleFilters';
 import { toQueryString } from '@/util/query';
 import { Collapsible } from '@/components/ui/Collapsible';
 import { useToast } from '@/context/ToastProvider';
+import { AddRoleModal } from '@/components/Modals/AddRoleModal';
 
 export interface Role {
     id: string | number;
@@ -24,13 +25,6 @@ export interface Role {
 const columns: ColDef<Role>[] = [
     { headerName: 'ID', field: 'id', width: 90 },
     { headerName: 'Name', field: 'name', flex: 1 },
-    // { headerName: 'Email', field: 'email', flex: 1 },
-    // {
-    //     headerName: 'Created',
-    //     field: 'createdAt',
-    //     valueFormatter: ({ value }) => new Date(value).toLocaleDateString(),
-    //     flex: 1,
-    // },
 ];
 
 type ViewType = 'table' | 'list';
@@ -47,7 +41,7 @@ export const RolesView: React.FC<any> = () => {
     // #region HOOKS
     const [view, setView] = useState<ViewType>('list');
     const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
-    const [query, setQuery] = useState<any>({
+    const [query,] = useState<any>({
         page: 1,
         limit: 10
     });
@@ -56,7 +50,7 @@ export const RolesView: React.FC<any> = () => {
     const { data: roles, loading, retry: fetchData } = useFetch<PaginatedResponse<Role>>(`/roles?${toQueryString(query)}`, {
         auto: true,
         method: 'GET',
-        onSuccess: () => showToast('Data loaded', 'success'),
+        onSuccess: () => showToast('Data loaded (roles)', 'success'),
         onError: () => showToast('Data failed to load', 'warning')
     })
     const { retry: createData } = useFetch<PaginatedResponse<Role>>(`/roles`, {
@@ -70,13 +64,6 @@ export const RolesView: React.FC<any> = () => {
     // #endregion
 
     // #region HANDLERS
-    const handlePagination = (
-        page: number,
-        limit: number
-    ) => {
-        setQuery((prev: any) => ({ ...prev, page, limit }))
-    }
-
     const handleCreate = async (data: Role) => {
         try {
             await createData(data);
@@ -101,10 +88,10 @@ export const RolesView: React.FC<any> = () => {
                         isOpen={isFiltersOpen}
                         onClick={() => setIsFiltersOpen((prev) => !prev)}
                     />
-                    {/* <AddRoleModal
+                    <AddRoleModal
                         buttonText={'+ Add'}
                         onSubmit={handleCreate}
-                    /> */}
+                    />
                 </div>
             </div>
 
@@ -141,13 +128,6 @@ export const RolesView: React.FC<any> = () => {
                     )}
                 </>
             </Async>
-
-            <Pagination
-                page={query.page}
-                limit={query.limit}
-                onChange={handlePagination}
-                total={roles?.meta?.total as number}
-            />
         </div>
     )
 }

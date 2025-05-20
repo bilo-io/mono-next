@@ -28,7 +28,7 @@ export class Role {
   parent!: Role;
 
   @TreeLevelColumn()
-  depth!: number;
+  level!: number;
 
   @ManyToMany(() => Permission, { cascade: true })
   @JoinTable()
