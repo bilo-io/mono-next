@@ -1,5 +1,6 @@
 import { Controller, Post, Get, Body, Param } from '@nestjs/common';
 import { RolesService } from './roles.service';
+import { Role } from './role.entity';
 
 @Controller('roles')
 export class RolesController {
@@ -8,6 +9,11 @@ export class RolesController {
   @Post()
   create(@Body() body: { name: string; parentId?: string }) {
     return this.roleService.createRole(body.name, body.parentId);
+  }
+
+  @Get()
+  findAll(): Promise<Role[]> {
+    return this.roleService.findAll();
   }
 
   @Post(':id/permissions')

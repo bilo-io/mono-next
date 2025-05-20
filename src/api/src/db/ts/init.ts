@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { AppDataSource } from './data-source';
-import { Location } from '../../locations/location.entity';
 
 async function initializeDatabase(): Promise<void> {
   try {

@@ -18,6 +18,10 @@ export class RolesService {
     private readonly permissionRepo: Repository<Permission>,
   ) {}
 
+  findAll(): Promise<Role[]> {
+    return this.roleRepo.find();
+  }
+
   async createRole(name: string, parentId?: string): Promise<Role> {
     const role = this.roleRepo.create({ name });
 

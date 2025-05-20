@@ -1,4 +1,3 @@
-// src/locations/locations.controller.ts
 import { Controller, Post, Body, Get, Param, Query } from '@nestjs/common';
 import { LocationsService } from './locations.service';
 import { CreateLocationDto } from './dto/create-location.dto';
