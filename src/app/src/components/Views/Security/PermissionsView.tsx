@@ -43,12 +43,16 @@ const viewOptions: {
         { value: 'list', icon: <FiList className="w-4 h-4" /> },
     ];
 // #endregion
+type PermissionsViewProps = object;
 
-export const PermissionsView: React.FC<any> = () => {
+export const PermissionsView: React.FC<PermissionsViewProps> = () => {
     // #region HOOKS
     const [view, setView] = useState<ViewType>('list');
     const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
-    const [query, setQuery] = useState<any>({
+    const [query,] = useState<{
+        page: number,
+        limit: number
+    }>({
         page: 1,
         limit: 10
     });
@@ -59,6 +63,7 @@ export const PermissionsView: React.FC<any> = () => {
         method: 'GET',
         onSuccess: () => showToast('Data loaded (permissions)', 'success'),
         onError: (error: unknown) => {
+            // @ts-expect-error cutting corners
             showToast(`Data failed to load\n${error?.message}`, 'warning')
             console.log({ error })
         }
@@ -74,13 +79,6 @@ export const PermissionsView: React.FC<any> = () => {
     // #endregion
 
     // #region HANDLERS
-    const handlePagination = (
-        page: number,
-        limit: number
-    ) => {
-        setQuery((prev: any) => ({ ...prev, page, limit }))
-    }
-
     const handleCreate = async (data: Permission) => {
         try {
             await createData(data);
@@ -127,7 +125,7 @@ export const PermissionsView: React.FC<any> = () => {
                 <>
                     {view === 'table' && (
                         <Table<Permission>
-                            rowData={permissions?.data || []}
+                            rowData={permissions || []}
                             columnDefs={columns}
                             height={'500px'}
                         />

@@ -32,7 +32,7 @@ export class LocationsService {
   async findById(id: number): Promise<Location> {
     const location = await this.repo.findOneBy({ id });
     if (!location) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+      throw new NotFoundException(`Location with ID ${id} not found`);
     }
     return location;
   }

@@ -41,6 +41,6 @@ export class PermissionsController {
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<{ message: string }> {
     await this.permissionService.remove(id);
-    return { message: `User with ID ${id} has been deleted` };
+    return { message: `Permission with ID ${id} has been deleted` };
   }
 }

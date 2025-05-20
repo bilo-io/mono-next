@@ -32,7 +32,7 @@ export class TenantsService {
   async findById(id: number): Promise<Tenant> {
     const tenant = await this.repo.findOneBy({ id });
     if (!tenant) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+      throw new NotFoundException(`Tenant with ID ${id} not found`);
     }
     return tenant;
   }

@@ -1,7 +1,7 @@
 'use client'
 
 import { Table } from '@/components/Table';
-import { type PaginatedResponse, Pagination } from '@/components/Pagination';
+import { type PaginatedResponse } from '@/components/Pagination';
 import { useFetch } from '@/hooks/useFetch';
 import { ReactNode, useState } from 'react';
 import type { ColDef } from 'ag-grid-community'
@@ -36,12 +36,16 @@ const viewOptions: {
         { value: 'list', icon: <FiList className="w-4 h-4" /> },
     ];
 // #endregion
+type RolesViewProps = object
 
-export const RolesView: React.FC<any> = () => {
+export const RolesView: React.FC<RolesViewProps> = () => {
     // #region HOOKS
     const [view, setView] = useState<ViewType>('list');
     const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
-    const [query,] = useState<any>({
+    const [query,] = useState<{
+        page: number,
+        limit: number
+    }>({
         page: 1,
         limit: 10
     });
@@ -121,7 +125,7 @@ export const RolesView: React.FC<any> = () => {
                                 <li key={role.id} className="p-4 border rounded shadow">
                                     <div><strong>{role.name}</strong></div>
                                     <div>{role.name}</div>
-                                    <div className="text-sm text-gray-500">Created: {new Date(role.createdAt).toLocaleString()}</div>
+                                    {/* <div className="text-sm text-gray-500">Created: {new Date(role.createdAt).toLocaleString()}</div> */}
                                 </li>
                             ))}
                         </ul>

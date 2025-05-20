@@ -173,3 +173,12 @@ export const generateLon = (): string => {
   const lon = faker.number.float({ min: -18.5, max: 3.5 });
   return lon.toFixed(4);
 };
+
+export function pickRandom<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+export function pickRandomSubset<T>(arr: T[], min = 1, max = 2): T[] {
+  const count = Math.floor(Math.random() * (max - min + 1)) + min;
+  return [...arr].sort(() => 0.5 - Math.random()).slice(0, count);
+}
