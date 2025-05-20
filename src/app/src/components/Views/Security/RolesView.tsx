@@ -16,6 +16,9 @@ import { Collapsible } from '@/components/ui/Collapsible';
 import { useToast } from '@/context/ToastProvider';
 import { AddRoleModal } from '@/components/Modals/AddRoleModal';
 import { Permission } from './PermissionsView';
+import { PermissionPill } from './PermissionPill';
+import { ContextMenu } from '@/components/ui/ContextMenu';
+import { BiPencil, BiTrash } from 'react-icons/bi';
 
 export interface Role {
     id: string | number;
@@ -46,6 +49,7 @@ export const RolesView: React.FC<RolesViewProps> = ({
     permissions
 }) => {
     // #region HOOKS
+    const { showToast } = useToast()
     const [view, setView] = useState<ViewType>('list');
     const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
     const [query,] = useState<{
@@ -55,15 +59,12 @@ export const RolesView: React.FC<RolesViewProps> = ({
         page: 1,
         limit: 10
     });
-    
-    const { showToast } = useToast()
+    // #endregion
+
+    // #region CRUD
     const { data: roles, loading, retry: fetchData } = useFetch<Role[]>(`/roles?${toQueryString(query)}`, {
         auto: true,
         method: 'GET',
-        onSuccess: (data) => {
-            console.log({roles: data})
-            showToast('Data loaded (roles)', 'success')
-        },
         onError: () => showToast('Data failed to load', 'warning')
     })
     const { retry: createData } = useFetch<PaginatedResponse<Role>>(`/roles/create`, {
@@ -74,23 +75,52 @@ export const RolesView: React.FC<RolesViewProps> = ({
             fetchData()
         },
     })
+    const { retry: deleteItem } = useFetch<Role>(`/roles`, {
+        auto: false,
+        method: 'DELETE',
+        onSuccess: () => {
+            showToast('Role deleted successfully', 'success')
+            fetchData()
+        },
+        onError: () => {
+            showToast('Role deletion failed', 'error')
+        }
+    })
     // #endregion
 
     // #region HANDLERS
     const handleCreate = async (data: Role) => {
         try {
-            await createData(data);
+            await createData({
+                name: data.name,
+                permissionIds: data.permissions.map((p: any) => p?.value)
+            });
         } catch (err) {
             console.error('Failed to create', err);
         }
     };
     // #endregion
 
+    const renderMenuItems = (item: Permission) => [
+        {
+            label: 'Edit',
+            icon: <BiPencil />,
+            onClick: () => { }
+        },
+        {
+            label: 'Delete',
+            icon: <BiTrash />,
+            onClick: () => deleteItem(item)
+        }
+    ]
+
     return (
         <div>
             <div className="text-md mb-4 flex flex-col flex-wrap-reverse md:flex-row md:flex-nowrap items-center justify-between">
-                <div>Define Roles that have a set of Permissions. Once defined, roles can be assigned to users.</div>
-                <div />
+                <div>
+                    Define Roles that have a set of Permissions. Once defined, roles can be assigned to users.
+                </div>
+
                 <div className="flex flex-row h-full items-center gap-8">
                     <Toggle<ViewType>
                         value={view}
@@ -132,13 +162,18 @@ export const RolesView: React.FC<RolesViewProps> = ({
                     {view === 'list' && (
                         <ul className="space-y-2">
                             {roles?.map((role: Role) => (
-                                <li key={role.id} className="p-4 border rounded shadow">
-                                    <div><strong>{role.name}</strong></div>
-                                    <div>Permissions: {role.permissions.map((permission: { id: string, name: string }) => (
-                                        <span className={'p-2 rounded-lg bg-pink-100'} key={permission.id}>{permission?.name}</span>
-                                    ))}</div>
+                                <li key={role.id} className="p-4 border rounded shadow flex flex-row items-center justify-between">
+                                    <div>
+                                        <div><strong>{role.name}</strong></div>
+                                        <div><span className='text-sm'>Permissions</span>: {
+                                            role.permissions.map((permission: { id: string, name: string }) => (
+                                                <PermissionPill key={permission.id} permission={permission} />
+                                            ))
+                                        }
+                                        </div>
+                                    </div>
+                                    <ContextMenu items={renderMenuItems(role)} />
 
-                                    {/* <div className="text-sm text-gray-500">Created: {new Date(role.createdAt).toLocaleString()}</div> */}
                                 </li>
                             ))}
                         </ul>

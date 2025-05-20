@@ -60,7 +60,6 @@ export default function TenantsPage() {
     const { showToast } = useToast()
     const { data: tenants, loading, retry: fetchData } = useFetch<PaginatedResponse<Tenant>>(`/tenants?${toQueryString(query)}`, {
         auto: true,
-        // onSuccess: () => showToast('Data loaded', 'success'),
         onError: () => showToast('Data failed to load', 'warning')
     })
     const { retry: createData } = useFetch<Tenant>('/tenants/create', {

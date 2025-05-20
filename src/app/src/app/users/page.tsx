@@ -61,7 +61,6 @@ export default function UsersPage() {
     const { data: users, loading, retry: fetchData } = useFetch<PaginatedResponse<User>>(`/users?${toQueryString(query)}`, {
         auto: true,
         method: 'GET',
-        onSuccess: () => showToast('Data loaded', 'success'),
         onError: () => showToast('Data failed to load', 'warning')
     })
     const { retry: createData } = useFetch<PaginatedResponse<User>>(`/users`, {

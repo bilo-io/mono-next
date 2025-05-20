@@ -32,7 +32,8 @@ export const AddRoleModal: React.FC<AddRoleModalProps> = ({
 
     const handleSubmit = () => {
         if (name.trim()) {
-            onSubmit({ name, permissions: rolePermissions } as Role);
+            // @ts-ignore
+            onSubmit({ name, permissions: rolePermissions });
             handleClose();
         }
     };

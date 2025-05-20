@@ -15,6 +15,9 @@ import { toQueryString } from '@/util/query';
 import { Collapsible } from '@/components/ui/Collapsible';
 import { useToast } from '@/context/ToastProvider';
 import { AddPermissionModal } from '@/components/Modals/AddPermissionModal';
+import { PermissionPill } from './PermissionPill';
+import { ContextMenu } from '@/components/ui/ContextMenu';
+import { BiPencil, BiTrash } from 'react-icons/bi';
 
 export interface Permission {
     id: string | number;
@@ -67,7 +70,6 @@ export const PermissionsView: React.FC<PermissionsViewProps> = ({
         method: 'GET',
         onSuccess: (data) => {
             onUpdatePermissions(data)
-            showToast('Data loaded (permissions)', 'success')
         },
         onError: (error: unknown) => {
             // @ts-expect-error cutting corners
@@ -83,6 +85,17 @@ export const PermissionsView: React.FC<PermissionsViewProps> = ({
             fetchData()
         },
     })
+    const { retry: deleteItem } = useFetch<Permission>(`/permissions`, {
+        auto: false,
+        method: 'DELETE',
+        onSuccess: () => {
+            showToast('Permission deleted successfully', 'success')
+            fetchData()
+        },
+        onError: () => {
+            showToast('Permission deletion failed', 'error')
+        }
+    })
     // #endregion
 
     // #region HANDLERS
@@ -95,10 +108,22 @@ export const PermissionsView: React.FC<PermissionsViewProps> = ({
     };
     // #endregion
 
+    const renderMenuItems = (item: Permission) => [
+        {
+            label: 'Edit',
+            icon: <BiPencil />,
+            onClick: () => { }
+        },
+        {
+            label: 'Delete',
+            icon: <BiTrash />,
+            onClick: () => deleteItem(item)
+        }
+    ]
+
     return (
         <div>
             <div className="text-2xl font-bold mb-4 flex flex-row items-center justify-between">
-                {/* <div>Permissions</div> */}
                 <div />
                 <div className="flex flex-row h-full items-center gap-8">
                     <Toggle<ViewType>
@@ -140,9 +165,9 @@ export const PermissionsView: React.FC<PermissionsViewProps> = ({
                     {view === 'list' && (
                         <ul className="space-y-2">
                             {permissions?.map((permission: Permission) => (
-                                <li key={permission.id} className="p-4 border rounded shadow">
-                                    <div><strong>{permission.name}</strong></div>
-                                    {/* <div className="text-sm text-gray-500">Created: {new Date(permission.createdAt).toLocaleString()}</div> */}
+                                <li key={permission.id} className="p-4 border rounded shadow flex flex-row items-center justify-between">
+                                    <PermissionPill permission={permission} />
+                                    <ContextMenu items={renderMenuItems(permission)} />
                                 </li>
                             ))}
                         </ul>

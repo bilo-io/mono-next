@@ -96,7 +96,6 @@ export default function LocationsPage() {
     const { data: locations, loading, retry: fetchData } = useFetch<PaginatedResponse<Location>>(`/locations?${toQueryString(query)}`, {
         auto: true,
         method: 'GET',
-        onSuccess: () => showToast('Data loaded', 'success'),
         onError: () => showToast('Data failed to load', 'warning')
     })
     const { retry: createData } = useFetch<PaginatedResponse<Location>>(`/locations`, {

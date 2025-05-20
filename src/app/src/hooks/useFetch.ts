@@ -41,7 +41,8 @@ export function useFetch<T>(
                 const finalHeaders =
                     headers || (body && !isFormData ? { 'Content-Type': 'application/json' } : {});
 
-                const res = await fetch(`${BASE_URL}${path}`, {
+                // @ts-expect-error item actually has an ID
+                const res = await fetch(`${BASE_URL}${path}${['DELETE', 'UPDATE'].includes(method) ? '/' + body.id : ''}`, {
                     method,
                     headers: finalHeaders,
                     body: body
@@ -90,8 +91,13 @@ export function useFetch<T>(
     );
 
     useEffect(() => {
-        if (config?.auto ?? true) {
+        if (!config.auto) return;
+
+        const hasRun = { current: false };
+
+        if (!hasRun.current) {
             fetchData();
+            hasRun.current = true;
         }
     }, [fetchData, config?.auto]);
 
