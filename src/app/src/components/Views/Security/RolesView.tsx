@@ -165,11 +165,14 @@ export const RolesView: React.FC<RolesViewProps> = ({
                                 <li key={role.id} className="p-4 border rounded shadow flex flex-row items-center justify-between">
                                     <div>
                                         <div><strong>{role.name}</strong></div>
-                                        <div><span className='text-sm'>Permissions</span>: {
-                                            role.permissions.map((permission: { id: string, name: string }) => (
-                                                <PermissionPill key={permission.id} permission={permission} />
-                                            ))
-                                        }
+                                        <div><span className='text-sm'>Permissions</span>:
+                                            <span className='flex flex-row flex-wrap'>
+                                                {
+                                                    role.permissions.map((permission: { id: string, name: string }) => (
+                                                        <PermissionPill key={permission.id} permission={permission} />
+                                                    ))
+                                                }
+                                            </span>
                                         </div>
                                     </div>
                                     <ContextMenu items={renderMenuItems(role)} />

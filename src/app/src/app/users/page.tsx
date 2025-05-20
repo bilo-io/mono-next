@@ -16,6 +16,7 @@ import { ToggleFilters } from '@/components/FilterForm/ToggleFilters';
 import { toQueryString } from '@/util/query';
 import { Collapsible } from '@/components/ui/Collapsible';
 import { useToast } from '@/context/ToastProvider';
+import { Role } from '@/components/Views/Security/RolesView';
 
 export interface User {
     id: number;
@@ -63,13 +64,18 @@ export default function UsersPage() {
         method: 'GET',
         onError: () => showToast('Data failed to load', 'warning')
     })
-    const { retry: createData } = useFetch<PaginatedResponse<User>>(`/users`, {
+    const { retry: createData } = useFetch<PaginatedResponse<User>>(`/users/create`, {
         auto: false,
         method: 'POST',
         onSuccess: () => {
             showToast('Data created', 'success')
             fetchData()
         },
+    })
+    const { data: roles, loading: loadingRoles, retry: fetchRolesData } = useFetch<Role[]>(`/roles?${toQueryString(query)}`, {
+        auto: true,
+        method: 'GET',
+        onError: () => showToast('Roles failed to load', 'warning')
     })
     // #endregion
 
@@ -107,6 +113,7 @@ export default function UsersPage() {
                     <AddUserModal
                         buttonText={'+ Add'}
                         onSubmit={handleCreate}
+                        roles={roles as Role[]}
                     />
                 </div>
             </div>

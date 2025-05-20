@@ -1,36 +1,48 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // components/modals/AddUserModal.tsx
 'use client';
 import React, { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { User } from '@/app/users/page';
+import Select, { DropdownValue } from '../ui/Select';
+import { Role } from '../Views/Security/RolesView';
 
 interface AddUserModalProps {
     onSubmit: (user: User) => void;
     buttonText?: string;
+    roles: Role[]
 }
 
 export const AddUserModal: React.FC<AddUserModalProps> = ({
     onSubmit,
     buttonText = 'Add User',
+    roles
 }) => {
+    // #region STATE
     const [isOpen, setIsOpen] = useState(false);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [userRoles, setUserRoles] = useState<DropdownValue>([]);
+    // #endregion
 
+    // #region HANDLERS
     const handleOpen = () => setIsOpen(true);
     const handleClose = () => {
         setIsOpen(false);
         setName('');
         setEmail('');
+        setPassword('')
     };
 
     const handleSubmit = () => {
         if (name.trim() && email.trim()) {
-            onSubmit({ name, email } as User);
+            onSubmit({ name, email, password } as User);
             handleClose();
         }
     };
+    // #endregion
 
     return (
         <>
@@ -83,6 +95,47 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({
                                 placeholder="jane@example.com"
                             />
                         </div>
+                        <div>
+                            <label htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem' }}>
+                                Password
+                            </label>
+                            <input
+                                id="password"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                style={{
+                                    width: '100%',
+                                    padding: '0.5rem',
+                                    borderRadius: '4px',
+                                    border: '1px solid #ccc',
+                                }}
+                                placeholder="Secure password"
+                            />
+                        </div>
+
+                        <label>
+                            Roles:
+                            <Select
+                                isMulti
+                                value={userRoles as string[]}
+                                // @ts-ignore
+                                onChange={data => setUserRoles(data)}
+                                style={{
+                                    width: '100%',
+                                    padding: '0.5rem',
+                                    borderRadius: '6px',
+                                    border: '1px solid #ccc',
+                                }}
+                                // @ts-ignore
+                                options={
+                                    roles?.map((p: Role) => ({
+                                        label: p.name,
+                                        value: p.id,
+                                    }))
+                                }
+                            />
+                        </label>
                     </div>
                 </Modal>
             )}
