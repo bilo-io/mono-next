@@ -31,7 +31,7 @@ export class Role {
   @Column({ nullable: true })
   level!: number;
 
-  @ManyToMany(() => Permission, { cascade: true })
+  @ManyToMany(() => Permission, { cascade: true, eager: true })
   @JoinTable()
   permissions!: Permission[];
 }

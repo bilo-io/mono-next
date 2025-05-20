@@ -31,11 +31,16 @@ export class RolesService {
     role.name = name;
 
     if (permissionIds?.length) {
-      role.permissions = permissionIds.map((id) => {
+      const permissions = permissionIds.map((id) => {
         const p = new Permission();
         p.id = id;
         return p;
       });
+
+      role.permissions = permissions;
+
+      console.log('permissions', permissions);
+      console.log('role.permissions', role);
     }
 
     if (parentId) {

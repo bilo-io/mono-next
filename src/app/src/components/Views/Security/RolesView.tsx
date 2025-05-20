@@ -16,12 +16,11 @@ import { Collapsible } from '@/components/ui/Collapsible';
 import { useToast } from '@/context/ToastProvider';
 import { AddRoleModal } from '@/components/Modals/AddRoleModal';
 import { Permission } from './PermissionsView';
-import { GiConsoleController } from 'react-icons/gi';
 
 export interface Role {
     id: string | number;
     name: string;
-    permissions: string[]
+    permissions: { id: string, name: string }[]
 }
 
 // #region VIEW CONFIG
@@ -135,9 +134,9 @@ export const RolesView: React.FC<RolesViewProps> = ({
                             {roles?.map((role: Role) => (
                                 <li key={role.id} className="p-4 border rounded shadow">
                                     <div><strong>{role.name}</strong></div>
-                                    {/* <div>Permissions: {role.permissions.map((permission) => (
-                                        <span key={permission}>{permission}</span>
-                                    ))}</div> */}
+                                    <div>Permissions: {role.permissions.map((permission: { id: string, name: string }) => (
+                                        <span className={'p-2 rounded-lg bg-pink-100'} key={permission.id}>{permission?.name}</span>
+                                    ))}</div>
 
                                     {/* <div className="text-sm text-gray-500">Created: {new Date(role.createdAt).toLocaleString()}</div> */}
                                 </li>

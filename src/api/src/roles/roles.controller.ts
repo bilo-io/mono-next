@@ -19,6 +19,8 @@ export class RolesController {
   create(
     @Body() body: { name: string; parentId?: string; permissionIds?: string[] },
   ) {
+    console.log(body.permissionIds);
+
     return this.roleService.createRole(
       body.name,
       body.parentId,
