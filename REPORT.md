@@ -15,14 +15,17 @@
     - [UX Design](#ux-design)
     - [Frontend Dev](#frontend-dev)
     - [Components](#components)
+  - [Misc](#misc)
     - [Future Work](#future-work)
     - [Appendix](#appendix)
       - [1. NextJS vs Nestjs](#1-nextjs-vs-nestjs)
 
 ## Overview
 
-In summary project was about implementing an RBAC system with dynamic creating of users, roles and permissions.
+In summary project was about implementing an RBAC system with dynamic creating of users, roles and permissions, with a basic [demo video](https://drive.google.com/file/d/1pHNs6rKt83HbOMtYJ9S1Zvr28gH4iPNu/view)
+
 The exact requirements can be found in the original [project spec (PDF)](./docs/ekko%20FS%20Challenge.pdf) in this repo.
+
 The rest of this document outlines how I approached the project, some of the decision making and also indicates how I used AI tools to improve my productivity.
 
 > **AI Tools**
@@ -298,6 +301,8 @@ Due to my familiarity with frontend, I specified the exact props, and how I want
 - components/ui
 - `useFetch`
 - `useHover`
+
+## Misc
 
 ### Future Work
 
