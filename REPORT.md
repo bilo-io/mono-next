@@ -22,17 +22,17 @@
 
 ## Overview
 
-In summary project was about implementing an RBAC system with dynamic creating of users, roles and permissions, with a basic [demo video](https://drive.google.com/file/d/1pHNs6rKt83HbOMtYJ9S1Zvr28gH4iPNu/view)
+In summary this project is about implementing an RBAC (role based access control) system with dynamic creating of users, roles and permissions, with a basic [demo video](https://drive.google.com/file/d/1pHNs6rKt83HbOMtYJ9S1Zvr28gH4iPNu/view)
 
-The exact requirements can be found in the original [project spec (PDF)](./docs/ekko%20FS%20Challenge.pdf) in this repo.
+The exact requirements can be found in the original [project spec (PDF)](./docs/ekko%20FS%20Challenge.pdf) within this repo.
 
-The rest of this document outlines how I approached the project, some of the decision making and also indicates how I used AI tools to improve my productivity.
+The rest of this document outlines how I approached the project, communicates some of the decision making throughout, and indicates how I used AI tools to improve my productivity.
 
 > **AI Tools**
 >
-> - I mainly used **ChatGPT** and Postman's **Postbot** for this assessment, and will indicate where throughout the project.
+> - I mainly used **ChatGPT** and Postman's **Postbot** for this assessment, and will indicate where throughout the report.
 > - I am aware of other tools like **Cursor** and **v0**, but did not use the AI tools, as these have limited free usage.
-> - Further, since v0 generates entire projects (but kinda badly if not correctly specified), I did not use this which can be confirmed from the git history of this project.
+> - Further, since **v0** (like **bolt.new**) generates entire projects (but kinda badly if not correctly prompted), I did not use this which can be confirmed from the git [commit history](https://github.com/bilo-io/mono-next/commits/main/) of this project.
 
 ## Requirements Gathering
 
@@ -321,6 +321,7 @@ Due to my familiarity with frontend, I specified the exact props, and how I want
 - Add Chromatic & Storybook for visual regression testing using
 - Add a Github actions file to control the CI pipeline better (`build`, `lint`, `test`, `deploy`)
 - Export the postman collection & env, add to project, and use [newman](https://www.npmjs.com/package/newman) to run any changes against this in the terminal (I do this for other projects)
+- Fix the seed script (it broke at some point while I was changing the schemas)
 
 Example output of newman in one of my other projects:
 
