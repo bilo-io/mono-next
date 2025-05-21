@@ -164,6 +164,13 @@ For each vertical slice I used the recommended NestJS module structure, similar,
 > - I chose `PATCH` instead of `PUT` because the former does not require the entire request body, but just a partial body, allowing more flexibility.
 > - I used the same endpoint structure for the other two vertical slices (`roles` and `permissions`), and would have implemented a few additional endpoints as required for the more complex logic.
 
+As mentioned previously I also created 2 scripts to initialise and populate the DB:
+
+`pnpm db:init`:
+![script: db-init](./docs/DB_init.png)
+
+`pnpm db:init`:
+![script: db-seed](./docs/DB_seed.png)
 
 ### UX Design
 
@@ -313,12 +320,21 @@ Due to my familiarity with frontend, I specified the exact props, and how I want
 - Form Validation on the frontend (backend validation happens with NestJS implicity when using TypeORM etc.)
 - Add Chromatic & Storybook for visual regression testing using
 - Add a Github actions file to control the CI pipeline better (`build`, `lint`, `test`, `deploy`)
+- Export the postman collection & env, add to project, and use [newman](https://www.npmjs.com/package/newman) to run any changes against this in the terminal (I do this for other projects)
+
+Example output of newman in one of my other projects:
+
+![newman_sample_output](./docs/newman_output.png)
+
+Current Postman collection:
+
+![current_postman_collection](./docs/postman.png)
 
 ### Appendix
 
 #### 1. NextJS vs Nestjs
 
-I had a conversation with my friend on Slack in September 2024, when first looking at Nest out of curiosity, only to be disappointed they didn't use it.
+I had a conversation with my friend on Slack in September 2024, when first looking at Nest out of curiosity, only to be disapsinted they didn't use it.
 
 ![NextJS vs NestJS](./docs/Next_vs_Nest.png)
 
