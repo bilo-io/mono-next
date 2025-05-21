@@ -19,6 +19,7 @@ import { PermissionPill } from './PermissionPill';
 import { ContextMenu } from '@/components/ui/ContextMenu';
 import { BiPencil, BiTrash } from 'react-icons/bi';
 import { Permission } from '@/app/security/page';
+import { AddResourceLabel } from '@/components/ui/AddResourceLabel';
 
 // #region VIEW CONFIG
 const columns: ColDef<Permission>[] = [
@@ -73,7 +74,7 @@ export const PermissionsView: React.FC<PermissionsViewProps> = ({
             console.log({ error })
         }
     })
-    const { retry: createData } = useFetch<PaginatedResponse<Permission>>(`/permissions`, {
+    const { retry: createData } = useFetch<PaginatedResponse<Permission>>(`/permissions/create`, {
         auto: false,
         method: 'POST',
         onSuccess: () => {
@@ -132,7 +133,7 @@ export const PermissionsView: React.FC<PermissionsViewProps> = ({
                         onClick={() => setIsFiltersOpen((prev) => !prev)}
                     />
                     <AddPermissionModal
-                        buttonText={'+ Add'}
+                        buttonText={<AddResourceLabel />}
                         onSubmit={handleCreate}
                     />
                 </div>

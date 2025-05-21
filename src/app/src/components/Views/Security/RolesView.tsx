@@ -22,6 +22,7 @@ import { BiPencil, BiTrash } from 'react-icons/bi';
 import { FaCirclePlus } from 'react-icons/fa6';
 import { FaPlus } from 'react-icons/fa';
 import { AddResourceLabel } from '@/components/ui/AddResourceLabel';
+import { RolePill } from './RolePill';
 
 export interface Role {
     id: string | number;
@@ -167,7 +168,11 @@ export const RolesView: React.FC<RolesViewProps> = ({
                             {roles?.map((role: Role) => (
                                 <li key={role.id} className="p-4 border rounded shadow flex flex-row items-center justify-between">
                                     <div>
-                                        <div><strong>{role.name}</strong></div>
+                                        <div className='mb-4'>
+                                            <strong>
+                                                <RolePill role={role} />
+                                            </strong>
+                                        </div>
                                         <div><span className='text-sm'>Permissions</span>:
                                             <span className='flex flex-row flex-wrap'>
                                                 {

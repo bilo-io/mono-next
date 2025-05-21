@@ -10,7 +10,7 @@ export const RolePill: React.FC<RolePillProps> = ({ role }) => {
     const { theme } = useTheme();
 
     return (
-        <span className={`p-2 m-1 rounded-lg text-sm font-medium`}
+        <span className={`p-2 m-1 rounded-lg text-inherit`}
             style={{
                 backgroundColor: `${theme.PRIMARY}55`,
                 color: theme.TEXT

@@ -1,6 +1,6 @@
 
 import { useTheme } from '@/context/ThemeContext';
-import { type Permission } from './PermissionsView';
+import { Permission } from '@/app/security/page';
 
 type PermissionPillProps = {
     permission: Permission;
@@ -19,8 +19,6 @@ export const PermissionPill: React.FC<PermissionPillProps> = ({ permission }) =>
 
         return theme.SIDENAV_BG;
     };
-
-    console.log({ permission, color: getColorClass() })
 
     return (
         <span className={`p-2 m-1 rounded-lg text-sm font-medium`}

@@ -3,11 +3,12 @@
 import React, { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
-import { Permission } from '@/components/Views/Security/PermissionsView';
+import { Permission } from '@/app/security/page';
+
 
 interface AddPermissionModalProps {
     onSubmit: (permission: Permission) => void;
-    buttonText?: string;
+    buttonText?: React.ReactNode;
 }
 
 export const AddPermissionModal: React.FC<AddPermissionModalProps> = ({
@@ -16,17 +17,15 @@ export const AddPermissionModal: React.FC<AddPermissionModalProps> = ({
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
 
     const handleOpen = () => setIsOpen(true);
     const handleClose = () => {
         setIsOpen(false);
         setName('');
-        setEmail('');
     };
 
     const handleSubmit = () => {
-        if (name.trim() && email.trim()) {
+        if (name.trim()) {
             onSubmit({ name } as Permission);
             handleClose();
         }
