@@ -10,7 +10,7 @@ interface TenantOption {
 }
 
 interface AddLocationModalProps {
-    buttonText: string;
+    buttonText: React.ReactNode;
     onSubmit: (location: Location) => void;
     tenants: TenantOption[];
 }

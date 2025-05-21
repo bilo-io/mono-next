@@ -20,8 +20,8 @@ export class UsersController {
 
   @Post('create')
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    const { email, password, name } = createUserDto;
-    return this.usersService.create({ email, password, name });
+    const { email, password, name, roleIds } = createUserDto;
+    return this.usersService.create(name, email, password, roleIds);
   }
 
   @Get()

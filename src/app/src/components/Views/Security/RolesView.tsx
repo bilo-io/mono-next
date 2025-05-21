@@ -19,6 +19,9 @@ import { Permission } from './PermissionsView';
 import { PermissionPill } from './PermissionPill';
 import { ContextMenu } from '@/components/ui/ContextMenu';
 import { BiPencil, BiTrash } from 'react-icons/bi';
+import { FaCirclePlus } from 'react-icons/fa6';
+import { FaPlus } from 'react-icons/fa';
+import { AddResourceLabel } from '@/components/ui/AddResourceLabel';
 
 export interface Role {
     id: string | number;
@@ -132,7 +135,7 @@ export const RolesView: React.FC<RolesViewProps> = ({
                         onClick={() => setIsFiltersOpen((prev) => !prev)}
                     />
                     <AddRoleModal
-                        buttonText={'+ Add'}
+                        buttonText={<AddResourceLabel />}
                         onSubmit={handleCreate}
                         permissions={permissions}
                     />
@@ -176,7 +179,6 @@ export const RolesView: React.FC<RolesViewProps> = ({
                                         </div>
                                     </div>
                                     <ContextMenu items={renderMenuItems(role)} />
-
                                 </li>
                             ))}
                         </ul>

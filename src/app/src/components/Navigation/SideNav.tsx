@@ -5,6 +5,7 @@ import { FiHome, FiUsers, FiChevronRight, FiChevronLeft, FiShield } from 'react-
 import clsx from 'clsx';
 import { FaShapes } from 'react-icons/fa';
 import { FaUserShield } from 'react-icons/fa6';
+import { IoShapes } from 'react-icons/io5';
 
 const navItems = [
     {
@@ -23,7 +24,7 @@ const navItems = [
         href: '/security'
     },
     {
-        icon: <FaShapes />,
+        icon: <IoShapes />,
         label: 'Styleguide',
         href: '/ui'
     },
@@ -38,7 +39,11 @@ export const SideNav = ({ mobile, toggleMobile }: { mobile?: boolean; toggleMobi
             <FaUserShield color={theme.PRIMARY} size={24} />
             {(
                 expanded
-                    ? <span className="text-lg mx-2">RBAC</span>
+                    ? <span
+                        className="text-lg mx-2"
+                        style={{ color: theme.PRIMARY }}>
+                        RBAC
+                    </span>
                     : null
             )}
         </div>

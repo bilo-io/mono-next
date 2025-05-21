@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './user.entity';
 import { Repository } from 'typeorm';
-import { paginate, PaginatedResponse } from '../common/pagination/paginate';
+
+import { User } from './user.entity';
 import { Role } from '../roles/role.entity';
+import { PaginatedResponse, paginate } from '../common/pagination/paginate'; // adjust import if needed
 
 @Injectable()
 export class UsersService {
@@ -12,27 +13,48 @@ export class UsersService {
     @InjectRepository(Role) private readonly roleRepo: Repository<Role>,
   ) {}
 
-  create(data: Partial<User>): Promise<User> {
-    const user = this.repo.create(data);
+  async create(
+    name: string,
+    email: string,
+    password: string,
+    roleIds?: string[],
+  ): Promise<User> {
+    const user = new User();
+    user.name = name;
+    user.email = email;
+    user.password = password;
+
+    if (roleIds?.length) {
+      // Only set the ID (roles already exist in DB)
+      user.roles = roleIds.map((id) => {
+        const role = new Role();
+        role.id = id;
+        return role;
+      });
+    }
+
+    console.log('debugging user\n\n', user);
     return this.repo.save(user);
   }
 
   findAll(): Promise<User[]> {
-    return this.repo.find();
+    return this.repo.find(); // roles will be included via eager loading
   }
 
-  findAllPaginated(
+  async findAllPaginated(
     page: number,
     limit: number,
   ): Promise<PaginatedResponse<User>> {
     const query = this.repo
       .createQueryBuilder('user')
+      .leftJoinAndSelect('user.roles', 'role') // include roles manually
       .orderBy('user.id', 'ASC');
+
     return paginate(query, page, limit);
   }
 
   async findById(id: number): Promise<User> {
-    const user = await this.repo.findOneBy({ id });
+    const user = await this.repo.findOne({ where: { id } }); // triggers eager loading
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }

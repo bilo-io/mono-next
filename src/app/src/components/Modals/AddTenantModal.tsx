@@ -6,7 +6,7 @@ import { Tenant } from '@/app/tenants/page';
 
 interface AddTenantModalProps {
     onSubmit: (data: Tenant) => void;
-    buttonText: string;
+    buttonText: React.ReactNode;
 }
 
 export const AddTenantModal: React.FC<AddTenantModalProps> = ({ buttonText, onSubmit }) => {

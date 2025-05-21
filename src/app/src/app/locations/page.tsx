@@ -17,6 +17,7 @@ import { Spinner } from '@/components/ui/Spinner';
 import { SkeletonList } from '@/components/ui/Skeleton/views/SkeletonList';
 import Async from '@/components/Async';
 import { useToast } from '@/context/ToastProvider';
+import { AddResourceLabel } from '@/components/ui/AddResourceLabel';
 
 export interface Location {
     id: number;
@@ -149,7 +150,7 @@ export default function LocationsPage() {
                         onClick={() => setIsFiltersOpen((prev) => !prev)}
                     />
                     <AddLocationModal
-                        buttonText={'+ Add'}
+                        buttonText={<AddResourceLabel />}
                         onSubmit={handleCreate}
                         tenants={[
                             {

@@ -10,7 +10,7 @@ import Select, { DropdownValue } from '../ui/Select';
 
 interface AddRoleModalProps {
     onSubmit: (role: Role) => void;
-    buttonText?: string;
+    buttonText?: React.ReactNode;
     permissions: Permission[]
 }
 

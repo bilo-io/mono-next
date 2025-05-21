@@ -7,11 +7,8 @@ import { RolesView } from '@/components/Views/Security/RolesView';
 import { useState } from 'react';
 
 export interface Permission {
-    id: number;
+    id: string | number;
     name: string;
-    email: string;
-    createdAt: string;
-    updatedAt: string;
 }
 
 export default function PermissionsPage() {
@@ -22,12 +19,12 @@ export default function PermissionsPage() {
             <Tabs
                 tabs={[
                     {
-                        label: 'Roles',
-                        view: <RolesView permissions={permissions} />,
+                        label: 'Permissions',
+                        view: <PermissionsView onUpdate={(permissions: Permission[]) => setPermissions(permissions)} />,
                     },
                     {
-                        label: 'Permissions',
-                        view: <PermissionsView onUpdatePermissions={setPermissions} />,
+                        label: 'Roles',
+                        view: <RolesView permissions={permissions} />,
                     },
                 ]}
             />

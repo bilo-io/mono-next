@@ -7,7 +7,7 @@ type PermissionPillProps = {
 };
 
 export const PermissionPill: React.FC<PermissionPillProps> = ({ permission }) => {
-    const { theme } = useTheme(); // assuming you return { theme: { colors: { ... } } }
+    const { theme } = useTheme();
 
     const getColorClass = () => {
         const name = permission.name.toLowerCase();

@@ -7,17 +7,20 @@ import { Button } from '@/components/ui/Button';
 import { User } from '@/app/users/page';
 import Select, { DropdownValue } from '../ui/Select';
 import { Role } from '../Views/Security/RolesView';
+import { Skeleton } from '../ui/Skeleton/Skeleton';
 
 interface AddUserModalProps {
     onSubmit: (user: User) => void;
-    buttonText?: string;
-    roles: Role[]
+    buttonText?: React.ReactNode;
+    roles: Role[];
+    isLoading: boolean
 }
 
 export const AddUserModal: React.FC<AddUserModalProps> = ({
     onSubmit,
     buttonText = 'Add User',
-    roles
+    roles,
+    isLoading
 }) => {
     // #region STATE
     const [isOpen, setIsOpen] = useState(false);
@@ -33,12 +36,13 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({
         setIsOpen(false);
         setName('');
         setEmail('');
-        setPassword('')
+        setPassword('');
+        setUserRoles([]);
     };
 
     const handleSubmit = () => {
         if (name.trim() && email.trim()) {
-            onSubmit({ name, email, password } as User);
+            onSubmit({ name, email, password, roles: userRoles } as unknown as User);
             handleClose();
         }
     };
@@ -116,7 +120,10 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({
 
                         <label>
                             Roles:
-                            <Select
+                            {isLoading ? (
+                                <Skeleton className='w-full h-10 mt-2' />
+                            ) : (
+                                <Select
                                 isMulti
                                 value={userRoles as string[]}
                                 // @ts-ignore
@@ -134,7 +141,7 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({
                                         value: p.id,
                                     }))
                                 }
-                            />
+                            />)}
                         </label>
                     </div>
                 </Modal>

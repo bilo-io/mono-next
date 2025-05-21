@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 import { AddUserModal } from '@/components/Modals/AddUserModal';
@@ -17,11 +18,16 @@ import { toQueryString } from '@/util/query';
 import { Collapsible } from '@/components/ui/Collapsible';
 import { useToast } from '@/context/ToastProvider';
 import { Role } from '@/components/Views/Security/RolesView';
+import { RolePill } from '@/components/Views/Security/RolePill';
+import { ContextMenu } from '@/components/ui/ContextMenu';
+import { BiPencil, BiTrash } from 'react-icons/bi';
+import { AddResourceLabel } from '@/components/ui/AddResourceLabel';
 
 export interface User {
     id: number;
     name: string;
     email: string;
+    roles: { label: string, value: string }[];
     createdAt: string;
     updatedAt: string;
 }
@@ -72,7 +78,18 @@ export default function UsersPage() {
             fetchData()
         },
     })
-    const { data: roles, loading: loadingRoles, retry: fetchRolesData } = useFetch<Role[]>(`/roles?${toQueryString(query)}`, {
+    const { retry: deleteItem } = useFetch<User>(`/users`, {
+        auto: false,
+        method: 'DELETE',
+        onSuccess: () => {
+            showToast('User deleted successfully', 'success')
+            fetchData()
+        },
+        onError: () => {
+            showToast('User deletion failed', 'error')
+        }
+    })
+    const { data: roles, loading: loadingRoles } = useFetch<Role[]>(`/roles?${toQueryString(query)}`, {
         auto: true,
         method: 'GET',
         onError: () => showToast('Roles failed to load', 'warning')
@@ -89,17 +106,36 @@ export default function UsersPage() {
 
     const handleCreate = async (data: User) => {
         try {
-            await createData(data);
+            const newUser = {
+                ...data,
+                roleIds: data.roles.map((role: { label: string, value: string }) => role.value),
+                roles: undefined
+            }
+
+            await createData(newUser);
         } catch (err) {
             console.error('Failed to create', err);
         }
     };
     // #endregion
 
+    const renderMenuItems = (item: User) => [
+        {
+            label: 'Edit',
+            icon: <BiPencil />,
+            onClick: () => { }
+        },
+        {
+            label: 'Delete',
+            icon: <BiTrash />,
+            onClick: () => deleteItem(item)
+        }
+    ]
+
     return (
         <Layout>
-            <div className="text-2xl font-bold mb-4 flex flex-row items-center justify-between">
-                <div>Users</div>
+            <div className="text-xl mb-4 flex flex-row items-center justify-between">
+                <div>Manage users and their roles</div>
                 <div className="flex flex-row h-full items-center gap-8">
                     <Toggle<ViewType>
                         value={view}
@@ -111,9 +147,10 @@ export default function UsersPage() {
                         onClick={() => setIsFiltersOpen((prev) => !prev)}
                     />
                     <AddUserModal
-                        buttonText={'+ Add'}
+                        buttonText={<AddResourceLabel />}
                         onSubmit={handleCreate}
                         roles={roles as Role[]}
+                        isLoading={loadingRoles}
                     />
                 </div>
             </div>
@@ -141,10 +178,19 @@ export default function UsersPage() {
                     {view === 'list' && (
                         <ul className="space-y-2 max-h-[85vh] overflow-hidden overflow-y-auto">
                             {users?.data?.map((user: User) => (
-                                <li key={user.id} className="p-4 border rounded shadow">
-                                    <div><strong>{user.name}</strong></div>
-                                    <div>{user.email}</div>
-                                    <div className="text-sm text-gray-500">Created: {new Date(user.createdAt).toLocaleString()}</div>
+                                <li key={user.id} className="p-4 border rounded shadow flex flex-row items-center justify-between">
+                                    <div>
+                                        <div><strong>{user.name}</strong></div>
+                                        <div>{user.email}</div>
+                                        {/* <div className="text-sm text-gray-500">Created: {new Date(user.createdAt).toLocaleString()}</div> */}
+                                        <div className='flex flex-row flex-wrap'>
+                                            {/* @ts-ignore */}
+                                            {user.roles.map((role: { id: string, name: string }) => (
+                                                <RolePill key={role.id} role={role} />
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <ContextMenu items={renderMenuItems(user)} />
                                 </li>
                             ))}
                         </ul>
@@ -161,6 +207,3 @@ export default function UsersPage() {
         </Layout>
     );
 }
-
-
-{/*  */ }

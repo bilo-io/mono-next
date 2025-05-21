@@ -18,11 +18,7 @@ import { AddPermissionModal } from '@/components/Modals/AddPermissionModal';
 import { PermissionPill } from './PermissionPill';
 import { ContextMenu } from '@/components/ui/ContextMenu';
 import { BiPencil, BiTrash } from 'react-icons/bi';
-
-export interface Permission {
-    id: string | number;
-    name: string;
-}
+import { Permission } from '@/app/security/page';
 
 // #region VIEW CONFIG
 const columns: ColDef<Permission>[] = [
@@ -47,11 +43,11 @@ const viewOptions: {
     ];
 // #endregion
 type PermissionsViewProps = {
-    onUpdatePermissions: (permissions: Permission[]) => void
+    onUpdate: (permissions: Permission[]) => void
 };
 
 export const PermissionsView: React.FC<PermissionsViewProps> = ({
-    onUpdatePermissions
+    onUpdate
 }) => {
     // #region HOOKS
     const [view, setView] = useState<ViewType>('list');
@@ -69,7 +65,7 @@ export const PermissionsView: React.FC<PermissionsViewProps> = ({
         auto: true,
         method: 'GET',
         onSuccess: (data) => {
-            onUpdatePermissions(data)
+            onUpdate(data)
         },
         onError: (error: unknown) => {
             // @ts-expect-error cutting corners
@@ -123,8 +119,8 @@ export const PermissionsView: React.FC<PermissionsViewProps> = ({
 
     return (
         <div>
-            <div className="text-2xl font-bold mb-4 flex flex-row items-center justify-between">
-                <div />
+            <div className="text-md mb-4 flex flex-row items-center justify-between">
+                <div>Manage permissions for various tasks, and then assign these to Roles</div>
                 <div className="flex flex-row h-full items-center gap-8">
                     <Toggle<ViewType>
                         value={view}

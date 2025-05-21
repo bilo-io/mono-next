@@ -4,7 +4,7 @@ import { Layout } from '@/components/Navigation/Layout';
 import { Table } from '@/components/Table';
 import { type PaginatedResponse, Pagination } from '@/components/Pagination';
 import { useFetch } from '@/hooks/useFetch';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import type { ColDef } from 'ag-grid-community'
 import { Toggle } from '@/components/Toggle';
 import { FiTable, FiList } from 'react-icons/fi';
@@ -16,6 +16,7 @@ import { Spinner } from '@/components/ui/Spinner';
 import { SkeletonList } from '@/components/ui/Skeleton/views/SkeletonList';
 import { Collapsible } from '@/components/ui/Collapsible';
 import { useToast } from '@/context/ToastProvider';
+import { AddResourceLabel } from '@/components/ui/AddResourceLabel';
 
 export interface Tenant {
     id: number;
@@ -104,7 +105,10 @@ export default function TenantsPage() {
                         isOpen={isFiltersOpen}
                         onClick={() => setIsFiltersOpen((prev) => !prev)}
                     />
-                    <AddTenantModal buttonText={'+ Add'} onSubmit={handleCreate} />
+                    <AddTenantModal
+                        buttonText={<AddResourceLabel />}
+                        onSubmit={handleCreate}
+                    />
                 </div>
             </div>
 
