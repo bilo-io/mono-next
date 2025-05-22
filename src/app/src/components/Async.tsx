@@ -31,11 +31,7 @@ export const Async: React.FC<AsyncProps> = ({
     if (isLoading && !hasData) {
         return (
             <div
-                style={{
-                    margin: 'auto',
-                    marginBottom: margin,
-                    marginTop: margin,
-                }}
+                className={`m-auto mb-[${margin}] mt-[${margin}]`}
             >
                 {preloader || <div className="skeleton h-32 w-full rounded-md bg-gray-200" />}
             </div>

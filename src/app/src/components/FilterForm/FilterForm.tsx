@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 import React from 'react';
@@ -52,6 +53,7 @@ export const FilterForm: React.FC<FilterFormProps> = ({
                                 name={field.name}
                                 control={control}
                                 className={''}
+                                // @ts-ignore
                                 render={({ field: controllerField }) => {
                                     switch (field.type) {
                                         case 'text':

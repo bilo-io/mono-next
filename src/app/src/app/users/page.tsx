@@ -22,6 +22,7 @@ import { RolePill } from '@/components/Views/Security/RolePill';
 import { ContextMenu } from '@/components/ui/ContextMenu';
 import { BiPencil, BiTrash } from 'react-icons/bi';
 import { AddResourceLabel } from '@/components/ui/AddResourceLabel';
+import { List } from '@/components/List';
 
 export interface User {
     id: number;
@@ -178,13 +179,14 @@ export default function UsersPage() {
                         />
                     )}
                     {view === 'list' && (
-                        <ul className="space-y-2 max-h-[85vh] overflow-hidden overflow-y-auto">
-                            {users?.data?.map((user: User) => (
-                                <li key={user.id} className="p-4 border rounded shadow flex flex-row items-center justify-between">
+                        <List<User>
+                            items={users?.data || []}
+                            renderItem={({ item: user }) => (
+                                <>
                                     <div>
                                         <div><strong>{user.name}</strong></div>
                                         <div>{user.email}</div>
-                                        <div className='flex flex-row flex-wrap'>
+                                        <div className="flex flex-row flex-wrap">
                                             {/* @ts-ignore */}
                                             {user.roles.map((role: Role) => (
                                                 <RolePill key={role.id} role={role} />
@@ -192,9 +194,10 @@ export default function UsersPage() {
                                         </div>
                                     </div>
                                     <ContextMenu items={renderMenuItems(user)} />
-                                </li>
-                            ))}
-                        </ul>
+                                </>
+                            )}
+                        />
+
                     )}
                 </>
             </Async>
