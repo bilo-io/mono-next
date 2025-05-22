@@ -5,8 +5,9 @@ import React, { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Role } from '@/components/Views/Security/RolesView';
-import { Permission } from '../Views/Security/PermissionsView';
+
 import Select, { DropdownValue } from '../ui/Select';
+import { Permission } from '@/app/security/page';
 
 interface AddRoleModalProps {
     onSubmit: (role: Role) => void;
