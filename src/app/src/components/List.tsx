@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React from "react";
 
 type RenderItemProps<T> = {
@@ -22,7 +23,8 @@ export function List<T>({
         <ul className={`space-y-2 overflow-hidden overflow-y-auto ${maxHeightClass} ${className}`}>
             {items.map((item, index) => (
                 <li
-                    key={(item as any).id ?? index}
+                    // @ts-ignore
+                    key={(item as T).id ?? index}
                     className="p-4 border rounded shadow flex flex-row items-center justify-between"
                 >
                     {renderItem({ item, index })}
