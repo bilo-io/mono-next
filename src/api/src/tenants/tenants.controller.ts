@@ -8,7 +8,7 @@ import { PaginatedResponse } from '../common/pagination/paginate';
 export class TenantsController {
   constructor(private readonly tenantsService: TenantsService) {}
 
-  @Post('create')
+  @Post()
   async create(@Body() createTenantDto: CreateTenantDto): Promise<Tenant> {
     const { name } = createTenantDto;
     return this.tenantsService.create({ name });
@@ -27,6 +27,6 @@ export class TenantsController {
 
   @Get(':id')
   findById(@Param('id') id: string): Promise<Tenant | null> {
-    return this.tenantsService.findById(+id); // Cast to number if `id` is numeric
+    return this.tenantsService.findById(+id);
   }
 }

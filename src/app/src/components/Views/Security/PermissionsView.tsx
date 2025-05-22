@@ -11,7 +11,6 @@ import Async from '@/components/Async';
 import { Spinner } from '@/components/ui/Spinner';
 import { SkeletonList } from '@/components/ui/Skeleton/views/SkeletonList';
 import { ToggleFilters } from '@/components/FilterForm/ToggleFilters';
-import { toQueryString } from '@/util/query';
 import { Collapsible } from '@/components/ui/Collapsible';
 import { useToast } from '@/context/ToastProvider';
 import { AddPermissionModal } from '@/components/Modals/AddPermissionModal';
@@ -25,13 +24,6 @@ import { AddResourceLabel } from '@/components/ui/AddResourceLabel';
 const columns: ColDef<Permission>[] = [
     { headerName: 'ID', field: 'id', width: 90 },
     { headerName: 'Name', field: 'name', flex: 1 },
-    // { headerName: 'Email', field: 'email', flex: 1 },
-    // {
-    //     headerName: 'Created',
-    //     field: 'createdAt',
-    //     valueFormatter: ({ value }) => new Date(value).toLocaleDateString(),
-    //     flex: 1,
-    // },
 ];
 
 type ViewType = 'table' | 'list';
@@ -53,16 +45,9 @@ export const PermissionsView: React.FC<PermissionsViewProps> = ({
     // #region HOOKS
     const [view, setView] = useState<ViewType>('list');
     const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
-    const [query,] = useState<{
-        page: number,
-        limit: number
-    }>({
-        page: 1,
-        limit: 10
-    });
 
     const { showToast } = useToast()
-    const { data: permissions, loading, retry: fetchData } = useFetch<Permission[]>(`/permissions?${toQueryString(query)}`, {
+    const { data: permissions, loading, retry: fetchData } = useFetch<Permission[]>(`/permissions`, {
         auto: true,
         method: 'GET',
         onSuccess: (data) => {
@@ -74,7 +59,7 @@ export const PermissionsView: React.FC<PermissionsViewProps> = ({
             console.log({ error })
         }
     })
-    const { retry: createData } = useFetch<PaginatedResponse<Permission>>(`/permissions/create`, {
+    const { retry: createData } = useFetch<PaginatedResponse<Permission>>(`/permissions`, {
         auto: false,
         method: 'POST',
         onSuccess: () => {

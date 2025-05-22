@@ -15,7 +15,7 @@ import { UpdatePermissionDto } from './dto/update-permission.dto';
 export class PermissionsController {
   constructor(private readonly permissionService: PermissionsService) {}
 
-  @Post('create')
+  @Post()
   create(@Body() body: { name: string }) {
     return this.permissionService.create({ name: body.name });
   }

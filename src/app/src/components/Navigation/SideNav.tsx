@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import { FiHome, FiUsers, FiChevronRight, FiChevronLeft, FiShield } from 'react-icons/fi';
 import clsx from 'clsx';
-import { FaShapes } from 'react-icons/fa';
 import { FaUserShield } from 'react-icons/fa6';
 import { IoShapes } from 'react-icons/io5';
 
@@ -11,7 +10,7 @@ const navItems = [
     {
         icon: <FiHome />,
         label: 'Home',
-        href: '/dashboard'
+        href: '/'
     },
     {
         icon: <FiUsers />,

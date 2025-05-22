@@ -70,7 +70,7 @@ export default function UsersPage() {
         method: 'GET',
         onError: () => showToast('Data failed to load', 'warning')
     })
-    const { retry: createData } = useFetch<PaginatedResponse<User>>(`/users/create`, {
+    const { retry: createData } = useFetch<PaginatedResponse<User>>(`/users`, {
         auto: false,
         method: 'POST',
         onSuccess: () => {
@@ -132,6 +132,8 @@ export default function UsersPage() {
         }
     ]
 
+
+
     return (
         <Layout>
             <div className="text-xl mb-4 flex flex-row items-center justify-between">
@@ -182,10 +184,9 @@ export default function UsersPage() {
                                     <div>
                                         <div><strong>{user.name}</strong></div>
                                         <div>{user.email}</div>
-                                        {/* <div className="text-sm text-gray-500">Created: {new Date(user.createdAt).toLocaleString()}</div> */}
                                         <div className='flex flex-row flex-wrap'>
                                             {/* @ts-ignore */}
-                                            {user.roles.map((role: { id: string, name: string }) => (
+                                            {user.roles.map((role: Role) => (
                                                 <RolePill key={role.id} role={role} />
                                             ))}
                                         </div>

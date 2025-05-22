@@ -8,7 +8,7 @@ import { PaginatedResponse } from '../common/pagination/paginate';
 export class LocationsController {
   constructor(private readonly locationsService: LocationsService) {}
 
-  @Post('create')
+  @Post()
   async create(
     @Body() createLocationDto: CreateLocationDto,
   ): Promise<Location> {
@@ -29,6 +29,6 @@ export class LocationsController {
 
   @Get(':id')
   findById(@Param('id') id: string): Promise<Location | null> {
-    return this.locationsService.findById(+id); // Cast to number if `id` is numeric
+    return this.locationsService.findById(+id);
   }
 }

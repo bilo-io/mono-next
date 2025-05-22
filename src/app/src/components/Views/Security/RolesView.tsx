@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import { Table } from '@/components/Table';
@@ -11,18 +12,15 @@ import Async from '@/components/Async';
 import { Spinner } from '@/components/ui/Spinner';
 import { SkeletonList } from '@/components/ui/Skeleton/views/SkeletonList';
 import { ToggleFilters } from '@/components/FilterForm/ToggleFilters';
-import { toQueryString } from '@/util/query';
 import { Collapsible } from '@/components/ui/Collapsible';
 import { useToast } from '@/context/ToastProvider';
 import { AddRoleModal } from '@/components/Modals/AddRoleModal';
-import { Permission } from './PermissionsView';
 import { PermissionPill } from './PermissionPill';
 import { ContextMenu } from '@/components/ui/ContextMenu';
 import { BiPencil, BiTrash } from 'react-icons/bi';
-import { FaCirclePlus } from 'react-icons/fa6';
-import { FaPlus } from 'react-icons/fa';
 import { AddResourceLabel } from '@/components/ui/AddResourceLabel';
 import { RolePill } from './RolePill';
+import { Permission } from '@/app/security/page';
 
 export interface Role {
     id: string | number;
@@ -56,22 +54,15 @@ export const RolesView: React.FC<RolesViewProps> = ({
     const { showToast } = useToast()
     const [view, setView] = useState<ViewType>('list');
     const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
-    const [query,] = useState<{
-        page: number,
-        limit: number
-    }>({
-        page: 1,
-        limit: 10
-    });
     // #endregion
 
     // #region CRUD
-    const { data: roles, loading, retry: fetchData } = useFetch<Role[]>(`/roles?${toQueryString(query)}`, {
+    const { data: roles, loading, retry: fetchData } = useFetch<Role[]>(`/roles`, {
         auto: true,
         method: 'GET',
         onError: () => showToast('Data failed to load', 'warning')
     })
-    const { retry: createData } = useFetch<PaginatedResponse<Role>>(`/roles/create`, {
+    const { retry: createData } = useFetch<PaginatedResponse<Role>>(`/roles`, {
         auto: false,
         method: 'POST',
         onSuccess: () => {

@@ -4,16 +4,16 @@ import { FiMenu, FiSun, FiMoon } from 'react-icons/fi';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-export const TopNav = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
+export const TopNav = ({ title, onMobileToggle }: { title?: string, onMobileToggle: () => void }) => {
     const { toggleTheme, isDark, theme } = useTheme();
     const path = usePathname();
-    const [pageTitle, setPageTitle] = useState('');
+    const [pageTitle, setPageTitle] = useState(title || '');
 
     useEffect(() => {
         const segments = path.split('/').filter(Boolean);
         const name = segments[segments.length - 1] || 'Dashboard';
-        setPageTitle(name.charAt(0).toUpperCase() + name.slice(1));
-    }, [path]);
+        if(!title) setPageTitle(name.charAt(0).toUpperCase() + name.slice(1));
+    }, [path, title]);
 
     return (
         <header
@@ -40,7 +40,7 @@ export const TopNav = ({ onMobileToggle }: { onMobileToggle: () => void }) => {
                             </span>
                         ))}
                 </div>
-                <div className="block sm:hidden font-semibold">{pageTitle}</div>
+                <div className="block sm:hidden font-semibold">{title || pageTitle}</div>
             </div>
             <button onClick={toggleTheme}>{isDark ? <FiSun /> : <FiMoon />}</button>
         </header>

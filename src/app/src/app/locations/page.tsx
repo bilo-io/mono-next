@@ -8,7 +8,6 @@ import { ReactNode, useState } from 'react';
 import type { ColDef } from 'ag-grid-community'
 import { Toggle } from '@/components/Toggle';
 import { FiTable, FiList } from 'react-icons/fi';
-import { FilterField } from '@/components/FilterForm/FilterForm';
 import { AddLocationModal } from '@/components/Modals/AddLocationModal';
 import { ToggleFilters } from '@/components/FilterForm/ToggleFilters';
 import { toQueryString } from '@/util/query';
@@ -44,43 +43,6 @@ const viewOptions: {
 }[] = [
     { value: 'table', icon: <FiTable className="w-4 h-4" /> },
     { value: 'list', icon: <FiList className="w-4 h-4" /> },
-];
-
-const filterFields: FilterField[] = [
-    {
-        name: 'name',
-        label: 'Location Name',
-        type: 'text',
-        placeholder: 'Filter by location name',
-    },
-    {
-        name: 'address',
-        label: 'Address',
-        type: 'text',
-        placeholder: 'Filter by address',
-    },
-    {
-        name: 'lat',
-        label: 'Latitude',
-        type: 'text',
-        placeholder: 'Filter by latitude',
-    },
-    {
-        name: 'lon',
-        label: 'Longitude',
-        type: 'text',
-        placeholder: 'Filter by longitude',
-    },
-    {
-        name: 'status',
-        label: 'Status',
-        type: 'select',
-        options: [
-            { value: '', label: 'All' },
-            { value: 'active', label: 'Active' },
-            { value: 'inactive', label: 'Inactive' },
-        ],
-    },
 ];
 // #endregion
 
@@ -120,11 +82,6 @@ export default function LocationsPage() {
             limit
         }))
     }
-
-    const handleFilterChange = (newQuery: any) => {
-        setQuery((prev: any) => ({ ...prev, newQuery }));
-        console.log('Current query:', newQuery); // This is where you can use the query for your fetch logic
-    };
     // #endregion
 
     const handleCreate = async (data: Location) => {
@@ -167,12 +124,6 @@ export default function LocationsPage() {
                 <div className='my-12'>
                     Filters
                 </div>
-
-                {/* <FilterForm
-                    onChange={handleFilterChange}
-                    initialValues={query}
-                    fields={filterFields}
-                /> */}
             </Collapsible>
 
 

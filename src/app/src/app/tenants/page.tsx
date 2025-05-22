@@ -63,7 +63,7 @@ export default function TenantsPage() {
         auto: true,
         onError: () => showToast('Data failed to load', 'warning')
     })
-    const { retry: createData } = useFetch<Tenant>('/tenants/create', {
+    const { retry: createData } = useFetch<Tenant>('/tenants', {
         auto: false,
         method: 'POST',
         onError: () => showToast('Data failed to create', 'error'),

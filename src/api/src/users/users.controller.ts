@@ -18,7 +18,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post('create')
+  @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     const { email, password, name, roleIds } = createUserDto;
     return this.usersService.create(name, email, password, roleIds);
@@ -34,7 +34,7 @@ export class UsersController {
 
   @Get(':id')
   findById(@Param('id') id: string): Promise<User | null> {
-    return this.usersService.findById(+id); // Cast to number if `id` is numeric
+    return this.usersService.findById(+id);
   }
 
   @Patch(':id')

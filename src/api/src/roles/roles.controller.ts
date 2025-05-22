@@ -15,7 +15,7 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 export class RolesController {
   constructor(private readonly roleService: RolesService) {}
 
-  @Post('create')
+  @Post()
   create(
     @Body() body: { name: string; parentId?: string; permissionIds?: string[] },
   ) {
