@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Permission } from '@/app/security/page';
+import FormPermission, { FormDataPermission } from '../Forms/FormPermission';
 
 
 interface AddPermissionModalProps {
@@ -45,26 +46,11 @@ export const AddPermissionModal: React.FC<AddPermissionModalProps> = ({
                     submitText="Submit"
                     cancelText="Cancel"
                 >
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                        <div>
-                            <label htmlFor="name" style={{ display: 'block', marginBottom: '0.5rem' }}>
-                                Name
-                            </label>
-                            <input
-                                id="name"
-                                type="text"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                style={{
-                                    width: '100%',
-                                    padding: '0.5rem',
-                                    borderRadius: '4px',
-                                    border: '1px solid #ccc',
-                                }}
-                                placeholder="Jane Doe"
-                            />
-                        </div>
-                    </div>
+                    <FormPermission
+                        onSubmit={(data: FormDataPermission): void => {
+                            setName(data.name)
+                        }}
+                    />
                 </Modal>
             )}
         </>

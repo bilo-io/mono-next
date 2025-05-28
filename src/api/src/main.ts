@@ -6,10 +6,10 @@ async function bootstrap() {
 
   app.enableCors({
     origin: (origin, callback) => {
-      const allowedOrigins = ['http://localhost:3000'];
-
-      // Log what origin is received
-      console.log('CORS Origin:', origin);
+      const allowedOrigins = [
+        'http://localhost:3000',
+        'https://mono-next.vercel.app',
+      ];
 
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
@@ -22,4 +22,6 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 8000);
 }
+
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 bootstrap();

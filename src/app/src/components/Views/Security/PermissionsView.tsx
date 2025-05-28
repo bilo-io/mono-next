@@ -19,6 +19,7 @@ import { ContextMenu } from '@/components/ui/ContextMenu';
 import { BiPencil, BiTrash } from 'react-icons/bi';
 import { Permission } from '@/app/security/page';
 import { AddResourceLabel } from '@/components/ui/AddResourceLabel';
+import { FormDataPermission } from '@/components/Forms/FormPermission';
 
 // #region VIEW CONFIG
 const columns: ColDef<Permission>[] = [
@@ -81,7 +82,8 @@ export const PermissionsView: React.FC<PermissionsViewProps> = ({
     // #endregion
 
     // #region HANDLERS
-    const handleCreate = async (data: Permission) => {
+    const handleCreate = async (data: FormDataPermission) => {
+        debugger
         try {
             await createData(data);
         } catch (err) {
