@@ -18,7 +18,7 @@ export default function FormPermission({ onSubmit }: { onSubmit: (data: FormData
                     label="Name"
                     type="text"
                     placeholder="Name of permission (e.g. 'read:users')"
-                    className="col-span-12 sm:col-span-6"
+                    className="col-span-12"
                 />
             </div>
         </Form>

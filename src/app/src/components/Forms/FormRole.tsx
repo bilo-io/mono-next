@@ -22,7 +22,7 @@ export default function FormRole({ onSubmit, permissions }: { permissions: Permi
                     label="Name"
                     type="text"
                     placeholder="John Doe"
-                    className="col-span-12 sm:col-span-6"
+                    className="col-span-12"
                 />
                 <FormField
                     name="permissions"
@@ -33,7 +33,7 @@ export default function FormRole({ onSubmit, permissions }: { permissions: Permi
                         value: permission.id
                     }))}
                     placeholder="'read:users', 'write:users', etc."
-                    className="col-span-12 sm:col-span-6"
+                    className="col-span-12"
                 />
             </div>
         </Form>

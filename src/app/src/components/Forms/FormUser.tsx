@@ -24,21 +24,21 @@ export default function FormUser({ onSubmit, roles }: { roles: Role[], onSubmit:
                     label="Name"
                     type="text"
                     placeholder="John Doe"
-                    className="col-span-12 sm:col-span-6"
+                    className="col-span-12"
                 />
                 <FormField
                     name="email"
                     label="Email"
                     type="text"
                     placeholder="john@doe.com"
-                    className="col-span-12 sm:col-span-6"
+                    className="col-span-12"
                 />
                 <FormField
                     name="password"
                     label="Password"
                     type="password"
                     placeholder=""
-                    className="col-span-12 sm:col-span-6"
+                    className="col-span-12"
                 />
                 <FormField
                     name="roles"
@@ -49,7 +49,7 @@ export default function FormUser({ onSubmit, roles }: { roles: Role[], onSubmit:
                         value: role.id
                     }))}
                     placeholder="'read:users', 'write:users', etc."
-                    className="col-span-12 sm:col-span-6"
+                    className="col-span-12"
                 />
             </div>
         </Form>

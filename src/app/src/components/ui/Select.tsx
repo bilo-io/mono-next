@@ -38,6 +38,8 @@ export const Select: React.FC<DropdownProps> = ({
             border: state.isFocused ? `1px solid ${theme?.PRIMARY}` : '1px solid #ccc',
             boxShadow: state.isFocused ? `0 0 0 1px ${theme.PRIMARY}` : 'none',
             color: theme?.TEXT,
+            paddingTop: '0.5rem',
+            paddingBottom: '0.5rem'
         }),
         menu: (provided) => ({
             ...provided,
