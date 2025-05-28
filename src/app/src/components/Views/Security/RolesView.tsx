@@ -88,7 +88,7 @@ export const RolesView: React.FC<RolesViewProps> = ({
         try {
             await createData({
                 name: data.name,
-                permissionIds: data.permissions.map((p: any) => p?.value)
+                permissionIds: data.permissions
             });
         } catch (err) {
             console.error('Failed to create', err);

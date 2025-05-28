@@ -1,14 +1,16 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 'use client'
 import React from 'react'
 import { useFormContext, Controller } from 'react-hook-form'
 import clsx from 'clsx'
 import { useTheme } from '@/context/ThemeContext'
-// import Select from './Select'
+import { Select } from './Select' // Import the custom Select component
+import { SingleValue, MultiValue } from 'react-select' // Import these types from react-select
 
 interface FormFieldProps {
     name: string
     label?: string
-    type?: 'text' | 'email' | 'password' | 'number' | 'textarea' | 'select' | 'date' | 'datetime-local' | 'time'
+    type?: 'text' | 'email' | 'password' | 'number' | 'textarea' | 'select' | 'multi-select' | 'date' | 'datetime-local' | 'time'
     options?: { label: string | undefined; value: string | number | null }[]
     placeholder?: string
     className?: string
@@ -26,6 +28,7 @@ export function FormField({
     const {
         control,
         formState: { errors, touchedFields },
+        setValue,
     } = useFormContext()
 
     const isTouched = touchedFields[name]
@@ -49,34 +52,49 @@ export function FormField({
             </label>
         )
 
-    if (type === 'select') {
+    if (type === 'select' || type === 'multi-select') {
+        // Map FormField's options to the format expected by your custom Select component
+        const mappedOptions = options?.map(opt => ({
+            label: opt.label || String(opt.value), // Ensure label is string, default to value if undefined
+            value: String(opt.value) // Ensure value is string
+        })) || [];
+
         return (
             <div className={wrapperClasses}>
+                {renderLabel()}
                 <Controller
                     control={control}
                     name={name}
                     render={({ field }) => (
-                        <>
-                            {renderLabel()}
-                            <select
-                                {...field}
-                                id={name}
-                                aria-invalid={!!error}
-                                className={clsx(
-                                    baseClasses,
-                                    'appearance-none pr-8' // Add space for dropdown icon if needed
-                                )}
-                            >
-                                <option value="" disabled hidden>
-                                    {placeholder}
-                                </option>
-                                {options?.map((opt) => (
-                                    <option key={opt.value} value={opt.value as string}>
-                                        {opt.label}
-                                    </option>
-                                ))}
-                            </select>
-                        </>
+                        <Select
+                            id={name}
+                            options={mappedOptions} // Use the mapped options
+                            // For single select, field.value could be string, number, or null
+                            // For multi-select, field.value could be string[] or number[]
+                            // We need to ensure the `value` prop passed to ReactSelect (via your custom Select)
+                            // matches what ReactSelect expects.
+                            // ReactSelect expects: SingleValue<{ value: string; label: string; }> | MultiValue<{ value: string; label: string; }>
+                            // Convert current field.value to the format expected by ReactSelect
+                            // @ts-ignore
+                            value={
+                                type === 'multi-select'
+                                    ? (field.value as (string | number)[])?.map(val => mappedOptions.find(opt => opt.value === String(val)))
+                                    : mappedOptions.find(opt => opt.value === String(field.value))
+                            }
+                            isMulti={type === 'multi-select'}
+                            onChange={(newValue) => {
+                                if (type === 'multi-select') {
+                                    // @ts-ignore
+                                    const selectedOptions = newValue as MultiValue<{ value: string; label: string; }>;
+                                    const selectedValues = selectedOptions.map(option => option.value);
+                                    setValue(name, selectedValues, { shouldValidate: true, shouldDirty: true });
+                                } else {
+                                    const selectedOption = newValue as SingleValue<{ value: string; label: string; }>;
+                                    setValue(name, selectedOption?.value, { shouldValidate: true, shouldDirty: true });
+                                }
+                            }}
+                            placeholder={placeholder}
+                        />
                     )}
                 />
                 {error && <p className="mt-1 text-sm text-red-500">{error}</p>}

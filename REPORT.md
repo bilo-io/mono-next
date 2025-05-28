@@ -41,12 +41,14 @@ The rest of this document outlines how I approached the project, communicates so
 As the project was intentionally vague, I engaged the team with a few questions, enquiring project tech stack, etc. 
 I decided to put everything in a monorepo, as it would be easier to dev, demo and present.
 
-| Tech                                    | Stack    | Description                                                   |
-| :-------------------------------------- | :------- | :------------------------------------------------------------ |
-| [NextJS](https://nextjs.org/)           | Frontend | A React & Typescript project                                  |
-| [NestJS](https://nestjs.com/)           | Backend  | A Node, Typescript API framework                              |
-| [Postgres](https://www.postgresql.org/) | Database | A Database technology to persist data                         |
-| [TypeORM](https://typeorm.io/)          | ORM      | Object Relational Mapper to interface with DB from Typescript |
+| Tech                                                             | Stack    | Description                                                   |
+| :--------------------------------------------------------------- | :------- | :------------------------------------------------------------ |
+| [NextJS](https://nextjs.org/)                                    | Frontend | A React & Typescript project                                  |
+| [NestJS](https://nestjs.com/)                                    | Backend  | A Node, Typescript API framework                              |
+| [Postgres](https://www.postgresql.org/)                          | Database | A Database technology to persist data                         |
+| [TypeORM](https://typeorm.io/)                                   | ORM      | Object Relational Mapper to interface with DB from Typescript |
+| [react-hook-form](https://www.npmjs.com/package/react-hook-form) | Frontend | A custom hook library for react forms                         |
+| [zod](https://www.npmjs.com/package/zod)                         | Frontend | Form validation for various fieldds                           |
 
 > More detailed tech stack documented in the project [README.md](./README.md#tech-stack)
 
@@ -313,14 +315,14 @@ Due to my familiarity with frontend, I specified the exact props, and how I want
 
 ### Future Work
 
+- [1/3] Fix the respective hosting platform builds to get everything hosted so it can be used beyond just `localhost`
+- [X] Form Validation on the frontend (backend validation happens with NestJS implicity when using TypeORM etc.)
+- [X] Export the postman collection & env, add to project, and use [newman](https://www.npmjs.com/package/newman) to run any changes against this in the terminal (I do this for other projects)
 - Definitely clean things up a bit more
 - Update the UI/UX to properly represent the tree and branch structure as the assessment requirements stated
 - Add more unit tests, integration and e2e tests
-- Fix the respective hosting platform builds to get everything hosted so it can be used beyond just `localhost`
-- Form Validation on the frontend (backend validation happens with NestJS implicity when using TypeORM etc.)
 - Add Chromatic & Storybook for visual regression testing using
 - Add a Github actions file to control the CI pipeline better (`build`, `lint`, `test`, `deploy`)
-- Export the postman collection & env, add to project, and use [newman](https://www.npmjs.com/package/newman) to run any changes against this in the terminal (I do this for other projects)
 - Fix the seed script (it broke at some point while I was changing the schemas)
 
 Example output of newman in one of my other projects:

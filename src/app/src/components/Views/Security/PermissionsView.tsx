@@ -83,7 +83,6 @@ export const PermissionsView: React.FC<PermissionsViewProps> = ({
 
     // #region HANDLERS
     const handleCreate = async (data: FormDataPermission) => {
-        debugger
         try {
             await createData(data);
         } catch (err) {

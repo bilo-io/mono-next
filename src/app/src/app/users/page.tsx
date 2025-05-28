@@ -25,12 +25,12 @@ import { AddResourceLabel } from '@/components/ui/AddResourceLabel';
 import { List } from '@/components/List';
 
 export interface User {
-    id: number;
+    id?: number;
     name: string;
     email: string;
     roles: { label: string, value: string }[];
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 // #region VIEW CONFIG
@@ -109,9 +109,12 @@ export default function UsersPage() {
         try {
             const newUser = {
                 ...data,
-                roleIds: data.roles.map((role: { label: string, value: string }) => role.value),
+                // @ts-ignore
+                roleIds: data.roleIds, // NB: these are actually roleIds from the form
                 roles: undefined
             }
+
+            console.log({ newUser })
 
             await createData(newUser);
         } catch (err) {
